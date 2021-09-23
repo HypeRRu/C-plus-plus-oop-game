@@ -56,15 +56,31 @@ size_t Cell::getX() const
 {
 	return this->x;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> ac1c973d8b23976949ff75730bff368231784f0c
 size_t Cell::getY() const
 {
 	return this->y;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> ac1c973d8b23976949ff75730bff368231784f0c
 bool   Cell::getHasWall() const
 {
 	return this->wall;
 }
 
+<<<<<<< HEAD
+=======
+void Cell::toggleWall()
+{
+	this->wall = !this->wall;
+}
+
+>>>>>>> ac1c973d8b23976949ff75730bff368231784f0c
 std::unique_ptr<Cell> Cell::createUniquePtr()
 {
 	return std::make_unique<Cell>(this);

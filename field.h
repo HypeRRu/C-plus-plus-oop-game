@@ -23,7 +23,11 @@ public:
 
 	size_t getWidth() const;
 	size_t getHeight() const;
+<<<<<<< HEAD
 	const Cell&  getCell(size_t x, size_t y) const;
+=======
+	Cell&  getCell(size_t x, size_t y) const;
+>>>>>>> ac1c973d8b23976949ff75730bff368231784f0c
 private:
 	using cell_ptr = std::unique_ptr<Cell>;
 	using cell_row = std::unique_ptr<cell_ptr[]>;
