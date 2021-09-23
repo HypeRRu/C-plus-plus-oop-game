@@ -15,7 +15,15 @@ Field::Field(size_t width, size_t height)
 }
 
 Field::Field(const Field& other) : Field(other.width, other.height)
-{}
+{
+	for (size_t y = 0; y < this->height; y++)
+	{
+		for (size_t x = 0; x < this->width; x++)
+		{
+			this->setCell(x, y, other.cells[y][x].get());
+		}
+	}
+}
 
 Field::Field(Field&& other) : width{other.width}, height{other.height}
 {
@@ -29,7 +37,7 @@ void Field::setCell(size_t x, size_t y, Cell *cell)
 	cells[y][x] = cell->createUniquePtr();
 }
 
-const Cell& Field::getCell(size_t x, size_t y) const
+Cell& Field::getCell(size_t x, size_t y) const
 {
 	if (x < 0 || y < 0 || x >= this->width || y >= this->height) 
 		throw std::runtime_error("Координаты не должны выходить за границы поля!");
@@ -49,6 +57,13 @@ Field& Field::operator =(const Field& other)
 	for (size_t i = 0; i < this->height; i++)
 	{
 		cells[i] = std::make_unique<cell_ptr[]>(this->height);
+	}
+	for (size_t y = 0; y < this->height; y++)
+	{
+		for (size_t x = 0; x < this->width; x++)
+		{
+			this->setCell(x, y, other.cells[y][x].get());
+		}
 	}
 
 	return *this;

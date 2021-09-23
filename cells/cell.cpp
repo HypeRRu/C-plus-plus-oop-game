@@ -56,13 +56,20 @@ size_t Cell::getX() const
 {
 	return this->x;
 }
+
 size_t Cell::getY() const
 {
 	return this->y;
 }
+
 bool   Cell::getHasWall() const
 {
 	return this->wall;
+}
+
+void Cell::toggleWall()
+{
+	this->wall = !this->wall;
 }
 
 std::unique_ptr<Cell> Cell::createUniquePtr()

@@ -32,6 +32,8 @@ public:
 	size_t getY() const;
 	bool   getHasWall() const;
 
+	void toggleWall();
+
 	virtual std::string getTextureAlias() const;
 
 	virtual std::unique_ptr<Cell> createUniquePtr();
