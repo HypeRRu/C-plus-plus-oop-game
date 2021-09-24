@@ -9,17 +9,18 @@
 #include <cstdlib>
 #include <ctime>
 
-using cell_ptr = std::shared_ptr<Cell>;
+using cell_sptr = std::shared_ptr<Cell>;
 
 class FieldGenerator
 {
 public:
+	
 	FieldGenerator(size_t width = 0, size_t height = 0, double wall_chance = 0.1);
 	~FieldGenerator() = default;
 
-	std::vector<cell_ptr> generateCells();
+	std::vector<cell_sptr> generateCells();
 private:
-	std::vector<cell_ptr> cells;
+	std::vector<cell_sptr> cells;
 
 	size_t width;
 	size_t height;

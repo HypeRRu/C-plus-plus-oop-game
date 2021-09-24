@@ -6,6 +6,7 @@
 #include "cells/start_cell.h"
 #include "cells/end_cell.h"
 #include <stdexcept>
+#include "utils/cells_iterator.h"
 
 class Field
 {
@@ -24,6 +25,8 @@ public:
 	size_t getWidth() const;
 	size_t getHeight() const;
 	Cell&  getCell(size_t x, size_t y) const;
+
+	CellsIterator& createIterator();
 private:
 	using cell_ptr = std::unique_ptr<Cell>;
 	using cell_row = std::unique_ptr<cell_ptr[]>;

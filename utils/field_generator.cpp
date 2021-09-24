@@ -4,7 +4,7 @@ FieldGenerator::FieldGenerator(size_t width, size_t height, double wall_chance) 
 	width{width}, height{height}, wall_chance{wall_chance}
 {}
 
-std::vector<cell_ptr> FieldGenerator::generateCells()
+std::vector<cell_sptr> FieldGenerator::generateCells()
 {
 	std::srand(std::time(NULL));
 	bool has_wall;

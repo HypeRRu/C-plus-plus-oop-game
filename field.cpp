@@ -56,7 +56,7 @@ Field& Field::operator =(const Field& other)
 	cells = std::make_unique<cell_row[]>(this->height);
 	for (size_t i = 0; i < this->height; i++)
 	{
-		cells[i] = std::make_unique<cell_ptr[]>(this->height);
+		cells[i] = std::make_unique<cell_ptr[]>(this->width);
 	}
 	for (size_t y = 0; y < this->height; y++)
 	{
@@ -89,4 +89,15 @@ size_t Field::getHeight() const
 size_t Field::getWidth() const
 {
 	return this->width;
+}
+
+CellsIterator& Field::createIterator()
+{
+	std::shared_ptr<CellsIterator> iter = 
+		std::make_shared<CellsIterator>(
+			this->cells,
+			width,
+			height
+		);
+	return *iter.get();
 }

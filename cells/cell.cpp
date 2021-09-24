@@ -74,7 +74,7 @@ void Cell::toggleWall()
 
 std::unique_ptr<Cell> Cell::createUniquePtr()
 {
-	return std::make_unique<Cell>(this);
+	return std::make_unique<Cell>(*this);
 }
 
 std::string Cell::getTextureAlias() const
