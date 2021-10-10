@@ -1,60 +1,70 @@
-BUILD_DIR = ./build
-INTERFACE_PATH = ./interfaces
-CELLS_PATH = ./cells
-BUILD_PATH = ./build
-UTILS_PATH = ./utils
-GRAPHICS_PATH = ./graphics
-FILES = main.cpp field.cpp $(CELLS_PATH)/cell.cpp
-TARGETS = $(BUILD_DIR)/main.o $(BUILD_DIR)/field.o $(BUILD_DIR)/cell.o \
-	$(BUILD_DIR)/end_cell.o $(BUILD_DIR)/start_cell.o $(BUILD_DIR)/game.o \
-	$(BUILD_DIR)/field_generator.o $(BUILD_DIR)/renderer.o \
-	$(BUILD_DIR)/texture_manager.o $(BUILD_DIR)/cells_iterator.o
-HEADERS = field.h $(CELLS_PATH)/cell.h $(CELLS_PATH)/end_cell.h \
-	$(CELLS_PATH)/start_cell.h $(INTERFACE_PATH)/item.h game.h \
-	$(UTILS_PATH)/field_generator.h $(UTILS_PATH)/cells_iterator.h \
-	$(INTERFACE_PATH)/iterator.h
-GRAPHICS_HEADERS = $(GRAPHICS_PATH)/texture_manager.h \
-	$(GRAPHICS_PATH)/renderer.h
-COMP = g++ -std=c++2a
-SFML_LINK = -lsfml-graphics -lsfml-window -lsfml-system
+#Compiler and Linker
+CC          := g++
 
-all: compile
-	
-compile: $(TARGETS)
-	$(COMP) $(TARGETS) -o main $(SFML_LINK)
+#The Target Binary Program
+TARGET      := main
 
-$(BUILD_DIR)/main.o: main.cpp $(HEADERS)
-	$(COMP) main.cpp -c -o $(BUILD_DIR)/main.o
+#The Directories, Source, Includes, Objects, Binary and Resources
+SRCDIR      := src
+INCDIR      := inc
+BUILDDIR    := obj
+TARGETDIR   := bin
+RESDIR      := assets
+SRCEXT      := cpp
+DEPEXT      := d
+OBJEXT      := o
 
-$(BUILD_DIR)/field.o: field.cpp $(HEADERS)
-	$(COMP) field.cpp -c -o $(BUILD_DIR)/field.o
+#Flags, Libraries and Includes
+CFLAGS      := -Wall -O3 -std=c++2a -g
+LIB         := -lsfml-graphics -lsfml-system -lsfml-window
+INC         := -I$(INCDIR) -I/usr/local/include
+INCDEP      := -I$(INCDIR)
 
-$(BUILD_DIR)/cell.o: $(CELLS_PATH)/cell.cpp $(CELLS_PATH)/cell.h $(INTERFACE_PATH)/item.h
-	$(COMP) $(CELLS_PATH)/cell.cpp -c -o $(BUILD_DIR)/cell.o
+#---------------------------------------------------------------------------------
+#DO NOT EDIT BELOW THIS LINE
+#---------------------------------------------------------------------------------
+SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
 
-$(BUILD_DIR)/end_cell.o: $(CELLS_PATH)/end_cell.cpp $(CELLS_PATH)/cell.h $(INTERFACE_PATH)/item.h $(CELLS_PATH)/end_cell.h
-	$(COMP) $(CELLS_PATH)/end_cell.cpp -c -o $(BUILD_DIR)/end_cell.o
+#Defauilt Make
+all: resources $(TARGET)
 
-$(BUILD_DIR)/start_cell.o: $(CELLS_PATH)/start_cell.cpp $(CELLS_PATH)/cell.h $(INTERFACE_PATH)/item.h $(CELLS_PATH)/start_cell.h
-	$(COMP) $(CELLS_PATH)/start_cell.cpp -c -o $(BUILD_DIR)/start_cell.o
+#Remake
+remake: cleaner all
 
-$(BUILD_DIR)/game.o: game.cpp $(HEADERS) $(GRAPHICS_HEADERS)
-	$(COMP) game.cpp -c -o $(BUILD_DIR)/game.o
+#Copy Resources from Resources Directory to Target Directory
+resources: directories
+	@cp -r $(RESDIR)/* $(TARGETDIR)/$(RESDIR)/
 
-$(BUILD_DIR)/field_generator.o: $(UTILS_PATH)/field_generator.cpp $(HEADERS)
-	$(COMP) $(UTILS_PATH)/field_generator.cpp -c -o $(BUILD_DIR)/field_generator.o
+#Make the Directories
+directories:
+	@mkdir -p $(TARGETDIR)
+	@mkdir -p $(BUILDDIR)
 
-$(BUILD_DIR)/renderer.o: $(GRAPHICS_PATH)/renderer.cpp $(GRAPHICS_HEADERS)
-	$(COMP) $(GRAPHICS_PATH)/renderer.cpp -c -o $(BUILD_DIR)/renderer.o
+#Clean only Objecst
+clean:
+	@$(RM) -rf $(BUILDDIR)
 
-$(BUILD_DIR)/texture_manager.o: $(GRAPHICS_PATH)/texture_manager.cpp $(GRAPHICS_PATH)/texture_manager.h
-	$(COMP) $(GRAPHICS_PATH)/texture_manager.cpp -c -o $(BUILD_DIR)/texture_manager.o
+#Full Clean, Objects and Binaries
+cleaner: clean
+	@$(RM) -rf $(TARGETDIR)
 
-$(BUILD_DIR)/cells_iterator.o: $(UTILS_PATH)/cells_iterator.cpp \
-	$(UTILS_PATH)/cells_iterator.h \
-	$(CELLS_PATH)/cell.h $(INTERFACE_PATH)/iterator.h field.h
-	$(COMP) $(UTILS_PATH)/cells_iterator.cpp -c -o $(BUILD_DIR)/cells_iterator.o
+#Pull in dependency info for *existing* .o files
+-include $(OBJECTS:.$(OBJEXT)=.$(DEPEXT))
 
-clean: ./main
-	rm $(BUILD_DIR)/*
-	rm ./main 
+#Link
+$(TARGET): $(OBJECTS)
+	$(CC) -o $(TARGETDIR)/$(TARGET) $^ $(LIB)
+
+#Compile
+$(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
+	@$(CC) $(CFLAGS) $(INCDEP) -MM $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT)
+	@cp -f $(BUILDDIR)/$*.$(DEPEXT) $(BUILDDIR)/$*.$(DEPEXT).tmp
+	@sed -e 's|.*:|$(BUILDDIR)/$*.$(OBJEXT):|' < $(BUILDDIR)/$*.$(DEPEXT).tmp > $(BUILDDIR)/$*.$(DEPEXT)
+	@sed -e 's/.*://' -e 's/\\$$//' < $(BUILDDIR)/$*.$(DEPEXT).tmp | fmt -1 | sed -e 's/^ *//' -e 's/$$/:/' >> $(BUILDDIR)/$*.$(DEPEXT)
+	@rm -f $(BUILDDIR)/$*.$(DEPEXT).tmp
+
+#Non-File Targets
+.PHONY: all remake clean cleaner resources
