@@ -3,7 +3,7 @@
 DaemonEnemy::DaemonEnemy(size_t pos_x, size_t pos_y):
 	BaseEnemy(
 		pos_x, pos_y,
-		200, 150, 150
+		200, 50, 150
 	)
 {}
 

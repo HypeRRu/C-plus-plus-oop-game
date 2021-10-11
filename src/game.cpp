@@ -1,12 +1,9 @@
 #include "../inc/game.h"
 
-#include "../inc/items/heal_item.h"
-
 const int width = 20;
 const int height = 15;
 const int cell_size = 60;
 
-#include <cstdio>
 Game::Game() : generator{width, height}
 {
 	this->field = std::make_shared<Field>(width, height);
@@ -19,12 +16,17 @@ Game::Game() : generator{width, height}
 		this->field->getStart().second
 	);
 	this->observer = std::make_shared<GameObserver>(*this);
-	this->placeItems();
-	this->placeEnemies();
 
 	this->field->setObserver(this->observer);
 	this->renderer->setObserver(this->observer);
 	this->player->setObserver(this->observer);
+	this->field->onCellsAdded();
+
+	this->placeItems();
+	this->placeEnemies();
+
+	this->player->spawn();
+
 }
 
 bool Game::run()
@@ -33,23 +35,36 @@ bool Game::run()
 	using namespace std::chrono_literals;
 	using std::chrono::system_clock;
 
-    bool running = true;
-    // size_t delta = 1;
+	GameLogic event_processor;
+	std::pair<size_t, size_t> pl_movement;
 
-    this->getRenderer().addObject(
-		this->getPlayer(),
-		cell_size, 
-		cell_size,
-		false
-	);
+    bool running = true;
 
 	std::cout << "Running" << std::endl;
 	while (running)
 	{
 		std::chrono::system_clock::time_point renderStarts = std::chrono::system_clock::now();
+		pl_movement = event_processor.processWindowEventsAndGetMovement(
+			this->renderer->getWindow()
+		);
+		if (pl_movement != std::pair<size_t, size_t>{0, 0})
+		{
+			ActionMove act(
+				this->getPlayer(),
+				std::pair<size_t, size_t>{
+					this->player->getX() + pl_movement.first,
+					this->player->getY() + pl_movement.second
+				}
+			);
+			this->player->handleAction(act);
+		}
 		running = this->getRenderer().renderFrame();
-		sleep_until(renderStarts + .5s); /* fps limiter */
-		// sleep_until(renderStarts + .042s);
+		sleep_until(renderStarts + .045s); /* fps limiter */
+		/*ActionMove act(
+			this->getPlayer(),
+			this->field->getEnd()
+		);
+		this->player->handleAction(act);*/
 	}
 	return true;
 }
@@ -69,11 +84,6 @@ bool Game::fillField()
 				y, 
 				generated_cells.at(y * this->field->getWidth() + x).get()
 			);
-			this->getRenderer().addObject(
-				this->field->getCell(x, y),
-				cell_size,
-				cell_size
-			); /* mb do with signals */
 		}
 	}
 	return true;

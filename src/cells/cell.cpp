@@ -56,7 +56,8 @@ Cell& Cell::operator =(Cell&& other)
 void Cell::setItem(std::shared_ptr<BaseItem> _item)
 {
 	this->item = _item;
-	this->item->onAdd();
+	if (_item)
+		this->item->onAdd();
 }
 
 const size_t Cell::getX() const

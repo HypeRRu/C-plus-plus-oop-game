@@ -11,4 +11,3 @@ const std::string GargoyleEnemy::getTextureAlias() const
 {
 	return "enemy_gargoyle";
 }
-

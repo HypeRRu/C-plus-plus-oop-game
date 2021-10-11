@@ -16,4 +16,3 @@ bool BaseObserved::handleAction(Action& action)
 {
 	return this->getObserver().handleAction(action);	
 }
-

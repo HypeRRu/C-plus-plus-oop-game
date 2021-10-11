@@ -1,11 +1,7 @@
 #include "../../inc/actions/game_observer.h"
 
-#include <iostream>
-#include <cstdio>
 GameObserver::GameObserver(const Game& game_object)
 {
-	std::cout << "GO created" << std::endl;
-
 	this->field = game_object.getFieldPtr();
 	this->renderer = game_object.getRendererPtr();
 	this->player = game_object.getPlayerPtr();
@@ -17,9 +13,7 @@ void GameObserver::setEnemies(std::map<std::pair<size_t, size_t>, enemy_sptr> en
 }
 
 GameObserver::~GameObserver()
-{
-	std::cout << "GO deleted" << std::endl;
-}
+{}
 
 bool GameObserver::handleAction(Action& action)
 {
@@ -27,28 +21,18 @@ bool GameObserver::handleAction(Action& action)
 	{
 		case ActionType::moveAction:
 			return this->handleActionMove(action);
-			break;
-		case ActionType::effectAction:
-			return this->handleActionEffect(action);
-			break;
 		case ActionType::attackAction:
 			return this->handleActionAttack(action);
-			break;
 		case ActionType::deleteItemAction:
 			return this->handleActionDeleteItem(action);
-			break;
 		case ActionType::deleteEnemyAction:
 			return this->handleActionDeleteEnemy(action);
-			break;
 		case ActionType::pickItemAction:
 			return this->handleActionPickItem(action);
-			break;
-		case ActionType::addItemAction:
-			return this->handleActionAddItem(action);
-			break;
-		case ActionType::addEnemyAction:
-			return this->handleActionAddEnemy(action);
-			break;
+		case ActionType::addDrawableAction:
+			return this->handleActionAddDrawable(action);
+		case ActionType::playerReachEndAction:
+			return this->handleActionPlayerReachEnd(action);
 
 		case ActionType::defaultAction:
 		default:
@@ -87,12 +71,14 @@ bool GameObserver::handleActionMove(Action& _action)
 		action.getCoords().first,
 		action.getCoords().second
 	);
-	return true;
-}
+	ActionAddDrawable actDraw(action.getEntity());
+	this->handleAction(actDraw);
 
-bool GameObserver::handleActionEffect(Action& _action)
-{
-	// ActionEffect& action = dynamic_cast<ActionEffect&>(_action);
+	if (this->field->getEnd() == action.getCoords())
+	{
+		ActionPlayerReachEnd act;
+		return this->handleAction(act);
+	}
 	return true;
 }
 
@@ -101,7 +87,7 @@ bool GameObserver::handleActionAttack(Action& _action)
 	ActionAttack& action = dynamic_cast<ActionAttack&>(_action);
 	size_t damage = action.getEntity1().getDamage();
 	size_t shield = action.getEntity2().getShield();
-	size_t dhealth = damage - shield;
+	int dhealth = damage - shield;
 	if (dhealth > 0)
 		action.getEntity2().decreaseHealth(dhealth);
 	else
@@ -113,44 +99,51 @@ bool GameObserver::handleActionDeleteItem(Action& _action)
 {
 	ActionDeleteItem& action = dynamic_cast<ActionDeleteItem&>(_action);
 	this->renderer->removeObject(action.getItem());
+	this->field->getCell(
+		action.getItem().getX(),
+		action.getItem().getY()
+	).setItem(nullptr);
 	return true;
 }
 
 bool GameObserver::handleActionDeleteEnemy(Action& _action)
 {
 	ActionDeleteEnemy& action = dynamic_cast<ActionDeleteEnemy&>(_action);
+	std::pair<size_t, size_t> coords{
+		action.getEnemy().getX(),
+		action.getEnemy().getY()
+	};
 	this->renderer->removeObject(action.getEnemy());
+	auto it = this->enemies.find(coords);
+	(*it).second = nullptr;
+	this->enemies.erase(it);
+
 	return true;
 }
 
 bool GameObserver::handleActionPickItem(Action& _action)
 {
 	ActionPickItem& action = dynamic_cast<ActionPickItem&>(_action);
-	std::cout << "Item picked" << std::endl;
+	if (!action.getEntity().canPickItem()) 
+		return false;
 	action.getItem().onPickUp(
 		action.getEntity()
 	);
 	return true;
 }
 
-bool GameObserver::handleActionAddItem(Action& _action)
+bool GameObserver::handleActionAddDrawable(Action& _action)
 {
-	ActionAddItem& action = dynamic_cast<ActionAddItem&>(_action);
+	ActionAddDrawable& action = dynamic_cast<ActionAddDrawable&>(_action);
 	this->renderer.get()->addObject(
-		action.getItem(),
+		action.getDrawable(),
 		60, 60,
-		false
+		action.getIsBackground()
 	);
 	return true;
 }
 
-bool GameObserver::handleActionAddEnemy(Action& _action)
+bool GameObserver::handleActionPlayerReachEnd(Action& _action)
 {
-	ActionAddEnemy& action = dynamic_cast<ActionAddEnemy&>(_action);
-	this->renderer.get()->addObject(
-		action.getEnemy(),
-		60, 60,
-		false
-	);
 	return true;
 }

@@ -14,6 +14,7 @@
 #include "field.h"
 
 #include "graphics/renderer.h"
+#include "game_logic.h"
 
 #include "entities/player.h"
 #include "actions/action.h"

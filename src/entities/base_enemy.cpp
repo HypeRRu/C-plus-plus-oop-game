@@ -13,13 +13,7 @@ BaseEnemy::BaseEnemy(
 	this->damage = damage;
 }
 
-void BaseEnemy::spawn()
-{
-	ActionAddEnemy act(*this);
-	this->handleAction(act);
-}
-
-void BaseEnemy::decreaseHealth(size_t delta)
+void BaseEnemy::decreaseHealth(int delta)
 {
 	BaseEntity::decreaseHealth(delta);
 	if (this->getHealth() <= 0)
@@ -32,15 +26,7 @@ void BaseEnemy::destroy()
 	this->handleAction(act);
 }
 
-void BaseEnemy::attack()
-{}
-
-const size_t BaseEnemy::getX() const
+bool BaseEnemy::canPickItem()
 {
-	return this->x;
-}
-
-const size_t BaseEnemy::getY() const
-{
-	return this->y;
+	return false;
 }

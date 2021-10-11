@@ -6,7 +6,7 @@
 #include "../interfaces/item.h"
 #include "../interfaces/drawable.h"
 #include "../actions/base_observed.h"
-#include "../actions/action_add_item.h"
+#include "../actions/action_add_drawable.h"
 #include "../cells/cell.h"
 #include "../actions/action_pick_item.h"
 #include "../actions/action_delete_item.h"
@@ -20,8 +20,8 @@ class BaseItem:
 public:
 	BaseItem(size_t x, size_t y);
 
-	bool onAdd();
 	virtual bool onPickUp(BaseEntity& entity) = 0;
+	bool onAdd();
 	void destroy();
 
 	virtual const std::string getTextureAlias() const = 0;

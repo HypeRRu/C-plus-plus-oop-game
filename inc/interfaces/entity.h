@@ -6,18 +6,17 @@
 class Entity
 {
 public:
-	virtual void spawn()     = 0;
-	virtual void attack()    = 0;
-	virtual void moveTo(size_t x, size_t y)   = 0;
-	virtual void decreaseHealth(size_t delta) = 0;
-	virtual void increaseHealth(size_t delta) = 0;
-	virtual void decreaseShield(size_t delta) = 0;
-	virtual void increaseShield(size_t delta) = 0;
-	virtual void decreaseDamage(size_t delta) = 0;
-	virtual void increaseDamage(size_t delta) = 0;
-	virtual size_t getHealth() const = 0;
-	virtual size_t getDamage() const = 0;
-	virtual size_t getShield() const = 0;
+	virtual void spawn() = 0;
+	virtual void moveTo(size_t x, size_t y) = 0;
+	virtual void decreaseHealth(int delta)  = 0;
+	virtual void increaseHealth(int delta)  = 0;
+	virtual void decreaseShield(int delta)  = 0;
+	virtual void increaseShield(int delta)  = 0;
+	virtual void decreaseDamage(int delta)  = 0;
+	virtual void increaseDamage(int delta)  = 0;
+	virtual int getHealth() const = 0;
+	virtual int getDamage() const = 0;
+	virtual int getShield() const = 0;
 };
 
 #endif

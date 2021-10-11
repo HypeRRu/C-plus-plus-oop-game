@@ -2,8 +2,6 @@
 #define ACTION_ATTACK_H
 
 #include "action.h"
-
-// #include "../entities/player.h"
 #include "../entities/base_entity.h"
 
 class ActionAttack: public Action

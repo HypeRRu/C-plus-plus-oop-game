@@ -7,13 +7,12 @@ enum class ActionType
 {
 	defaultAction,
 	moveAction,
-	effectAction,
 	attackAction,
 	deleteItemAction,
 	deleteEnemyAction,
 	pickItemAction,
-	addItemAction,
-	addEnemyAction
+	addDrawableAction,
+	playerReachEndAction
 };
 
 class Action

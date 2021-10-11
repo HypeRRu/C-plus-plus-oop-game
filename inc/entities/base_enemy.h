@@ -2,15 +2,9 @@
 #define BASE_ENEMY_H
 
 #include "base_entity.h"
-#include "../interfaces/drawable.h"
-#include "../actions/base_observed.h"
-#include "../actions/action_add_enemy.h"
 #include "../actions/action_delete_enemy.h"
 
-class BaseEnemy: 
-	public BaseEntity,
-	public BaseObserved,
-	virtual public Drawable
+class BaseEnemy: public BaseEntity
 {
 public:
 	BaseEnemy(
@@ -20,19 +14,12 @@ public:
 		size_t damage = 100
 	);
 	virtual ~BaseEnemy() = default;
-	void decreaseHealth(size_t delta);
+	void decreaseHealth(int delta);
 
-	void spawn();
-	void attack();
 	void destroy();
+	bool canPickItem();
 
-	/*void pickItem();
-	void onReachEnd();*/
-
-	const size_t getX() const;
-	const size_t getY() const;
-
-	const std::string getTextureAlias() const = 0;
+	virtual const std::string getTextureAlias() const = 0;
 };
 
 #endif

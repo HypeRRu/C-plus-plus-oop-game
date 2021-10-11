@@ -10,6 +10,7 @@ WeaponItem::WeaponItem(
 bool WeaponItem::onPickUp(BaseEntity& entity)
 {
 	entity.increaseDamage(this->damage_increase);
+	this->destroy();
 	return true;
 }
 

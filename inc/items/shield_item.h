@@ -9,7 +9,7 @@ public:
 	ShieldItem(
 		size_t x,
 		size_t y,
-		size_t shield_increase = 3
+		size_t shield_increase = 50
 	);
 
 	bool onPickUp(BaseEntity& entity);

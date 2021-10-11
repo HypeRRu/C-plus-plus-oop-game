@@ -2,7 +2,7 @@
 
 BaseEntity::BaseEntity(size_t start_x, size_t start_y):
 	x{start_x}, y{start_y},
-	health{100}, shield{0}, damage{20}
+	health{100}, shield{100}, damage{100}
 {}
 
 BaseEntity::~BaseEntity()
@@ -14,48 +14,63 @@ void BaseEntity::moveTo(size_t x, size_t y)
 	this->y = y;
 }
 
-void BaseEntity::decreaseHealth(size_t delta)
+void BaseEntity::spawn()
+{
+	ActionAddDrawable act(*this, false);
+	this->handleAction(act);
+}
+
+void BaseEntity::decreaseHealth(int delta)
 {
 	this->health -= delta;
 }
 
-void BaseEntity::increaseHealth(size_t delta)
+void BaseEntity::increaseHealth(int delta)
 {
 	this->health += delta;
 }
 
-void BaseEntity::decreaseShield(size_t delta)
+void BaseEntity::decreaseShield(int delta)
 {
 	this->shield -= delta;
 }
 
-void BaseEntity::increaseShield(size_t delta)
+void BaseEntity::increaseShield(int delta)
 {
 	this->shield += delta;
 }
 
-void BaseEntity::decreaseDamage(size_t delta)
+void BaseEntity::decreaseDamage(int delta)
 {
 	this->damage -= delta;
 }
 
-void BaseEntity::increaseDamage(size_t delta)
+void BaseEntity::increaseDamage(int delta)
 {
 	this->damage += delta;
 }
 
-size_t BaseEntity::getHealth() const
+int BaseEntity::getHealth() const
 {
 	return this->health;
 }
 
-size_t BaseEntity::getDamage() const
+int BaseEntity::getDamage() const
 {
 	return this->damage;
 }
 
-size_t BaseEntity::getShield() const
+int BaseEntity::getShield() const
 {
 	return this->shield;
 }
 
+const size_t BaseEntity::getX() const
+{
+	return this->x;
+}
+
+const size_t BaseEntity::getY() const
+{
+	return this->y;
+}

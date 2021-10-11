@@ -2,35 +2,45 @@
 #define BASE_ENTITY_H
 
 #include "../interfaces/entity.h"
+#include "../actions/action_add_drawable.h"
+#include "../interfaces/drawable.h"
 #include "../actions/base_observed.h"
 
-class BaseEntity: public Entity
+class BaseEntity: 
+	public Entity,
+	public BaseObserved,
+	virtual public Drawable
 {
 public:
 	BaseEntity(size_t start_x, size_t start_y);
 	virtual ~BaseEntity();
 
 	void moveTo(size_t x, size_t y);
-	virtual void spawn() = 0;
-	virtual void attack() = 0;
+	void spawn();
+	virtual bool canPickItem() = 0;
 
-	virtual void decreaseHealth(size_t delta);
-	void increaseHealth(size_t delta);
-	void decreaseShield(size_t delta);
-	void increaseShield(size_t delta);
-	void decreaseDamage(size_t delta);
-	void increaseDamage(size_t delta);
+	virtual void decreaseHealth(int delta);
+	void increaseHealth(int delta);
+	void decreaseShield(int delta);
+	void increaseShield(int delta);
+	void decreaseDamage(int delta);
+	void increaseDamage(int delta);
 
-	size_t getHealth() const;
-	size_t getDamage() const;
-	size_t getShield() const;
+	int getHealth() const;
+	int getDamage() const;
+	int getShield() const;
+
+	const size_t getX() const;
+	const size_t getY() const;
+
+	virtual const std::string getTextureAlias() const = 0;
 protected:
 	size_t x;
 	size_t y;
 
-	size_t health;
-	size_t shield;
-	size_t damage;
+	int health;
+	int shield;
+	int damage;
 };
 
 #endif

@@ -9,7 +9,7 @@ public:
 	WeaponItem(
 		size_t x,
 		size_t y,
-		size_t damage_increase = 3
+		size_t damage_increase = 50
 	);
 
 	bool onPickUp(BaseEntity& entity);

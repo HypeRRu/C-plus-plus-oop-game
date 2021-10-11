@@ -9,7 +9,7 @@ public:
 	HealItem(
 		size_t x,
 		size_t y,
-		size_t healing_amount = 3
+		size_t healing_amount = 50
 	);
 
 	bool onPickUp(BaseEntity& entity);

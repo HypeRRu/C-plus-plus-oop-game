@@ -43,16 +43,6 @@ bool Renderer::renderFrame()
 	{
 		this->getWindow().draw(object.second);
 	}
-
-	sf::Event event;
-	while (this->getWindow().pollEvent(event))
-	{
-		if (event.type == sf::Event::Closed)
-		{
-			this->getWindow().close();
-			return false;
-		}
-	}
 	
 	this->getWindow().display();
 
@@ -105,16 +95,12 @@ bool Renderer::removeObject(const Drawable& object)
 
 	if (render_objects_bg.find(hash) != render_objects_bg.end())
 	{
-		/*ActionDelete act;
-		this->handleAction(act);*/
 		render_objects_bg.erase(hash);
 		return true;
 	}
 	if (render_objects_fg.find(hash) != render_objects_fg.end())
 	{
-		/*ActionDelete act;
-		this->handleAction(act);*/
-		render_objects_bg.erase(hash);
+		render_objects_fg.erase(hash);
 		return true;
 	}
 	return false;

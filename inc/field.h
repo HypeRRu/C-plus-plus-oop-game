@@ -9,6 +9,7 @@
 #include "cells/end_cell.h"
 #include "utils/cells_iterator.h"
 #include "actions/base_observed.h"
+#include "actions/action_add_drawable.h"
 
 class Field: public BaseObserved
 {
@@ -20,6 +21,7 @@ public:
 	Field(Field&& other);
 
 	void setCell(size_t x, size_t y, Cell *cell);	
+	bool onCellsAdded();
 
 	Field& operator =(const Field& other);
 	Field& operator =(Field&& other);

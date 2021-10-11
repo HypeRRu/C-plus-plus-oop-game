@@ -4,26 +4,9 @@ Player::Player(size_t start_x, size_t start_y):
 	BaseEntity(start_x, start_y)
 {}
 
-void Player::spawn()
-{}
-
-void Player::attack()
-{}
-
-void Player::pickItem()
-{}
-
-void Player::onReachEnd()
-{}
-
-const size_t Player::getX() const
+bool Player::canPickItem()
 {
-	return this->x;
-}
-
-const size_t Player::getY() const
-{
-	return this->y;
+	return true;
 }
 
 const std::string Player::getTextureAlias() const

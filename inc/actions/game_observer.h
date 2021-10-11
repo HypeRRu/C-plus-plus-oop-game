@@ -5,13 +5,12 @@
 #include "../game.h"
 #include "action.h"
 #include "action_attack.h"
-#include "action_effect.h"
 #include "action_move.h"
 #include "action_pick_item.h"
 #include "action_delete_item.h"
 #include "action_delete_enemy.h"
-#include "action_add_item.h"
-#include "action_add_enemy.h"
+#include "action_add_drawable.h"
+#include "action_player_reach_end.h"
 
 class Game;
 
@@ -30,8 +29,8 @@ public:
 	bool handleActionDeleteItem(Action& _action);
 	bool handleActionDeleteEnemy(Action& _action);
 	bool handleActionPickItem(Action& _action);
-	bool handleActionAddItem(Action& _action);
-	bool handleActionAddEnemy(Action& _action);
+	bool handleActionAddDrawable(Action& _action);
+	bool handleActionPlayerReachEnd(Action& _action);
 protected:
 	std::shared_ptr<Field> field;
 	std::shared_ptr<Renderer> renderer;

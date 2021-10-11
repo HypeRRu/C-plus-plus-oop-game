@@ -10,6 +10,7 @@ ShieldItem::ShieldItem(
 bool ShieldItem::onPickUp(BaseEntity& entity)
 {
 	entity.increaseShield(this->shield_increase);
+	this->destroy();
 	return true;
 }
 

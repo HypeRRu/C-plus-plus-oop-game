@@ -6,7 +6,7 @@ BaseItem::BaseItem(size_t x, size_t y):
 
 bool BaseItem::onAdd()
 {
-	ActionAddItem act(*this);
+	ActionAddDrawable act(*this, false);
 	return this->handleAction(act);
 }
 
@@ -25,4 +25,3 @@ const size_t BaseItem::getY() const
 {
 	return this->y;
 }
-

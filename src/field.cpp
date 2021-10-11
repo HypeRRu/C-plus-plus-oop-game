@@ -37,10 +37,23 @@ void Field::setCell(size_t x, size_t y, Cell *cell)
 	cells[y][x] = cell->createUniquePtr();
 }
 
+bool Field::onCellsAdded()
+{
+	for (size_t y = 0; y < this->height; y++)
+	{
+		for (size_t x = 0; x < this->width; x++)
+		{
+			ActionAddDrawable act(this->getCell(x, y), true);
+			this->handleAction(act);
+		}
+	}
+	return true;
+}
+
 Cell& Field::getCell(size_t x, size_t y) const
 {
 	if (x < 0 || y < 0 || x >= this->width || y >= this->height) 
-		throw std::runtime_error("Координаты не должны выходить за границы поля!");
+		return *this->cells[0][0].get();
 
 	return *this->cells[y][x].get();
 }

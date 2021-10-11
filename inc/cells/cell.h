@@ -5,7 +5,6 @@
 #include <vector>
 #include <string>
 
-// #include "../items/base_item.h"
 #include "../interfaces/drawable.h"
 
 enum class CellType {

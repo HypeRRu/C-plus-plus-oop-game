@@ -10,6 +10,7 @@ HealItem::HealItem(
 bool HealItem::onPickUp(BaseEntity& entity)
 {
 	entity.increaseHealth(this->healing_amount);
+	this->destroy();
 	return true;
 }
 
