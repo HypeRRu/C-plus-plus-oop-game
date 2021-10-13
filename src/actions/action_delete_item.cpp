@@ -9,7 +9,7 @@ ActionType ActionDeleteItem::getActionType()
 	return ActionType::deleteItemAction;
 }
 
-BaseItem& ActionDeleteItem::getItem()
+BaseItem& ActionDeleteItem::getItem() const
 {
 	return this->item;
 }

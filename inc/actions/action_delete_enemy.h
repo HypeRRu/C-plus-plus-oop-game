@@ -12,7 +12,7 @@ public:
 	ActionDeleteEnemy(BaseEnemy& _enemy);
 	ActionType getActionType();
 
-	BaseEnemy& getEnemy();
+	BaseEnemy& getEnemy() const;
 protected:
 	/* context */
 	BaseEnemy& enemy;

@@ -30,3 +30,71 @@ bool BaseEnemy::canPickItem()
 {
 	return false;
 }
+
+bool BaseEnemy::update()
+{
+	std::srand(std::time(NULL));
+	size_t try_number = 0;
+	size_t direction = 0;
+	while (try_number < 4)
+	{
+		direction = std::rand() % 4;
+		try_number++;
+		switch (direction)
+		{
+			case 0:
+			{
+				/* up */
+				ActionMove act(
+					*this, 
+					std::pair<size_t, size_t>{
+						this->getX(),
+						this->getY() - 1
+					}
+				);
+				if (this->handleAction(act))
+					return true;
+			}
+			case 1:
+			{
+				/* down */
+				ActionMove act(
+					*this, 
+					std::pair<size_t, size_t>{
+						this->getX(),
+						this->getY() + 1
+					}
+				);
+				if (this->handleAction(act))
+					return true;
+			}
+			case 2:
+			{
+				/* right */
+				ActionMove act(
+					*this, 
+					std::pair<size_t, size_t>{
+						this->getX() + 1,
+						this->getY()
+					}
+				);
+				if (this->handleAction(act))
+					return true;
+			}
+			case 3:
+			{
+				/* left */
+				ActionMove act(
+					*this, 
+					std::pair<size_t, size_t>{
+						this->getX() - 1,
+						this->getY()
+					}
+				);
+				if (this->handleAction(act))
+					return true;
+			}
+		}
+	}
+	return false;
+}

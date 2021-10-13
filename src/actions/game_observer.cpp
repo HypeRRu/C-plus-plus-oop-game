@@ -7,9 +7,14 @@ GameObserver::GameObserver(const Game& game_object)
 	this->player = game_object.getPlayerPtr();
 }
 
-void GameObserver::setEnemies(std::map<std::pair<size_t, size_t>, enemy_sptr> enemies)
+void GameObserver::setEnemies(std::shared_ptr<std::map<std::pair<size_t, size_t>, enemy_sptr>> enemies)
 {
 	this->enemies = enemies;
+}
+
+std::map<std::pair<size_t, size_t>, enemy_sptr>& GameObserver::getEnemies()
+{
+	return *this->enemies.lock().get();
 }
 
 GameObserver::~GameObserver()
@@ -41,22 +46,48 @@ bool GameObserver::handleAction(Action& action)
 	return false;
 }
 
-bool GameObserver::handleActionMove(Action& _action)
+bool GameObserver::moveLogicForEnemy(ActionMove& action)
 {
-	ActionMove& action = dynamic_cast<ActionMove&>(_action);
+	if (this->getEnemies().find(action.getCoords()) != this->getEnemies().end())
+	{
+		return false;
+	}
+	if (this->player->getX() == action.getCoords().first &&
+		this->player->getY() == action.getCoords().second)
+	{
+		ActionAttack act(
+			action.getEntity(),
+			*this->player.get()
+		);
+		this->handleAction(act);
+	}
+	/* changing array */
+	auto entity = this->getEnemies().extract(std::pair<size_t, size_t>{
+		action.getEntity().getX(),
+		action.getEntity().getY()
+	});
+	if (!entity.empty())
+	{
+	    entity.key() = action.getCoords();
+	    this->getEnemies().insert(std::move(entity));
+	}
+	return true;
+}
+
+bool GameObserver::moveLogicForPlayer(ActionMove& action)
+{
 	Cell& target_cell = this->field->getCell(
 		action.getCoords().first,
 		action.getCoords().second
 	);
-	if (target_cell.getHasWall())
-		return false;
-	if (this->enemies.find(action.getCoords()) != this->enemies.end())
+	if (this->getEnemies().find(action.getCoords()) != this->getEnemies().end())
 	{
 		ActionAttack act(
 			action.getEntity(),
-			*this->enemies.at(action.getCoords()).get()
+			*this->getEnemies().at(action.getCoords()).get()
 		);
-		return this->handleAction(act);
+		this->handleAction(act);
+		return false;
 	}
 	if (&target_cell.getItem())
 	{
@@ -65,6 +96,30 @@ bool GameObserver::handleActionMove(Action& _action)
 			target_cell.getItem()
 		);
 		this->handleAction(act);
+	}
+	return true;
+}
+
+bool GameObserver::handleActionMove(Action& _action)
+{
+	ActionMove& action = dynamic_cast<ActionMove&>(_action);
+	Cell& target_cell = this->field->getCell(
+		action.getCoords().first,
+		action.getCoords().second
+	);
+
+	if (target_cell.getHasWall())
+		return false;
+
+	if (action.getIsEnemy())
+	{
+		if (!this->moveLogicForEnemy(action))
+			return false;
+	}
+	else
+	{
+		if (!this->moveLogicForPlayer(action))
+			return true;
 	}
 
 	action.getEntity().moveTo(
@@ -114,10 +169,11 @@ bool GameObserver::handleActionDeleteEnemy(Action& _action)
 		action.getEnemy().getY()
 	};
 	this->renderer->removeObject(action.getEnemy());
-	auto it = this->enemies.find(coords);
+	auto it = this->getEnemies().find(coords);
+	if (it == this->getEnemies().end())
+		return false;
 	(*it).second = nullptr;
-	this->enemies.erase(it);
-
+	this->getEnemies().erase(it);
 	return true;
 }
 
@@ -145,5 +201,6 @@ bool GameObserver::handleActionAddDrawable(Action& _action)
 
 bool GameObserver::handleActionPlayerReachEnd(Action& _action)
 {
+	std::cout << "End reached!" << std::endl;
 	return true;
 }

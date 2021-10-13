@@ -4,6 +4,10 @@
 #include "base_entity.h"
 #include "../actions/action_delete_enemy.h"
 
+#include "../actions/action_move.h"
+#include <cstdlib>
+#include <ctime>
+
 class BaseEnemy: public BaseEntity
 {
 public:
@@ -18,6 +22,8 @@ public:
 
 	void destroy();
 	bool canPickItem();
+
+	bool update();
 
 	virtual const std::string getTextureAlias() const = 0;
 };

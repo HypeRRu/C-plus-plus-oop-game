@@ -9,7 +9,7 @@ ActionType ActionDeleteEnemy::getActionType()
 	return ActionType::deleteEnemyAction;
 }
 
-BaseEnemy& ActionDeleteEnemy::getEnemy()
+BaseEnemy& ActionDeleteEnemy::getEnemy() const
 {
 	return this->enemy;
 }

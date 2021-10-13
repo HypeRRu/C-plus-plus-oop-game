@@ -9,12 +9,12 @@ ActionType ActionPickItem::getActionType()
 	return ActionType::pickItemAction;
 }
 	
-BaseItem& ActionPickItem::getItem()
+BaseItem& ActionPickItem::getItem() const
 {
 	return this->item;
 }
 
-BaseEntity& ActionPickItem::getEntity()
+BaseEntity& ActionPickItem::getEntity() const
 {
 	return this->entity;
 }

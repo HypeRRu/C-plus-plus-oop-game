@@ -11,8 +11,8 @@ public:
 	ActionPickItem(BaseEntity& entity, BaseItem& _item);
 	ActionType getActionType();
 	
-	BaseEntity& getEntity();
-	BaseItem& getItem();
+	BaseEntity& getEntity() const;
+	BaseItem& getItem() const;
 protected:
 	/* context */
 	BaseEntity& entity;

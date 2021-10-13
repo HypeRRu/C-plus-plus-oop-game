@@ -10,7 +10,7 @@ public:
 	ActionDeleteItem(BaseItem& _item);
 	ActionType getActionType();
 
-	BaseItem& getItem();
+	BaseItem& getItem() const;
 protected:
 	/* context */
 	BaseItem& item;

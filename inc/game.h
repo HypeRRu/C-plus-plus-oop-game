@@ -30,6 +30,8 @@ class GameObserver;
 class Field;
 class Renderer;
 
+
+using enemies_map = std::map<std::pair<size_t, size_t>, enemy_sptr>;
 class Game
 {
 public:
@@ -44,7 +46,7 @@ public:
 	Renderer& getRenderer() const;
 	Field& getField() const;
 	Player& getPlayer() const;
-	std::map<std::pair<size_t, size_t>, enemy_sptr> getEnemies() const;
+	enemies_map getEnemies() const;
 	std::shared_ptr<Field> getFieldPtr() const;
 	std::shared_ptr<Renderer> getRendererPtr() const;
 	std::shared_ptr<Player> getPlayerPtr() const;
@@ -54,7 +56,7 @@ private:
 	FieldGenerator generator;
 	std::shared_ptr<GameObserver> observer;
 	std::shared_ptr<Player> player;
-	std::map<std::pair<size_t, size_t>, enemy_sptr> enemies;
+	std::shared_ptr<enemies_map> enemies;
 };
 
 #endif

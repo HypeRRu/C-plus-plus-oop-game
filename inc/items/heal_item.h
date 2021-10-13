@@ -18,7 +18,7 @@ public:
 
 	std::shared_ptr<BaseItem> getSharedPtr();
 protected:
-	size_t healing_amount = 3;
+	size_t healing_amount;
 };
 
 #endif

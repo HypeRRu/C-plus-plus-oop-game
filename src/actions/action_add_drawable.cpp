@@ -9,12 +9,12 @@ ActionType ActionAddDrawable::getActionType()
 	return ActionType::addDrawableAction;
 }
 
-bool ActionAddDrawable::getIsBackground()
+bool ActionAddDrawable::getIsBackground() const
 {
 	return this->is_background_object;
 }
 
-Drawable& ActionAddDrawable::getDrawable()
+Drawable& ActionAddDrawable::getDrawable() const
 {
 	return this->drawable;
 }

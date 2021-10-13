@@ -18,7 +18,7 @@ public:
 
 	std::shared_ptr<BaseItem> getSharedPtr();
 protected:
-	size_t shield_increase = 3;
+	size_t shield_increase;
 };
 
 #endif

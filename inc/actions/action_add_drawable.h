@@ -9,8 +9,8 @@ class ActionAddDrawable: public Action
 public:
 	ActionAddDrawable(Drawable& _drawable, bool is_background_object = false);
 	ActionType getActionType();
-	Drawable& getDrawable();
-	bool getIsBackground();
+	Drawable& getDrawable() const;
+	bool getIsBackground() const;
 protected:
 	Drawable& drawable;
 	bool is_background_object;

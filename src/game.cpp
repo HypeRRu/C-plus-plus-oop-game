@@ -26,7 +26,6 @@ Game::Game() : generator{width, height}
 	this->placeEnemies();
 
 	this->player->spawn();
-
 }
 
 bool Game::run()
@@ -39,6 +38,7 @@ bool Game::run()
 	std::pair<size_t, size_t> pl_movement;
 
     bool running = true;
+    std::chrono::system_clock::time_point updated = std::chrono::system_clock::now();
 
 	std::cout << "Running" << std::endl;
 	while (running)
@@ -54,17 +54,21 @@ bool Game::run()
 				std::pair<size_t, size_t>{
 					this->player->getX() + pl_movement.first,
 					this->player->getY() + pl_movement.second
-				}
+				},
+				false
 			);
 			this->player->handleAction(act);
 		}
+		if (std::chrono::system_clock::now() - updated >= 1.5s)
+		{
+			updated = std::chrono::system_clock::now();
+			for (auto enemy: this->getEnemies())
+			{			
+					enemy.second->update();
+			}
+		}
 		running = this->getRenderer().renderFrame();
 		sleep_until(renderStarts + .045s); /* fps limiter */
-		/*ActionMove act(
-			this->getPlayer(),
-			this->field->getEnd()
-		);
-		this->player->handleAction(act);*/
 	}
 	return true;
 }
@@ -107,9 +111,9 @@ bool Game::placeItems()
 bool Game::placeEnemies()
 {
 	EnemiesGenerator enemies_generator(this->getField());
-	this->enemies = enemies_generator.generateEnemies();
+	this->enemies = std::make_shared<enemies_map>(enemies_generator.generateEnemies());
 	this->observer->setEnemies(this->enemies);
-	for (auto enemy: this->enemies)
+	for (auto enemy: this->getEnemies())
 	{
 		enemy.second->setObserver(this->observer);
 		enemy.second->spawn();
@@ -134,7 +138,7 @@ Player& Game::getPlayer() const
 
 std::map<std::pair<size_t, size_t>, enemy_sptr> Game::getEnemies() const
 {
-	return this->enemies;
+	return *this->enemies.get();
 }
 
 std::shared_ptr<Field> Game::getFieldPtr() const

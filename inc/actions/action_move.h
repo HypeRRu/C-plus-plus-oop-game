@@ -8,14 +8,16 @@
 class ActionMove: public Action
 {
 public:
-	ActionMove(BaseEntity& entity, const std::pair<size_t, size_t>& coords);
+	ActionMove(BaseEntity& entity, const std::pair<size_t, size_t>& coords, bool is_enemy = true);
 	ActionType getActionType();
 	BaseEntity& getEntity() const;
 	const std::pair<size_t, size_t>& getCoords() const;
+	bool getIsEnemy() const;
 protected:
 	/* context */
 	BaseEntity& entity;
 	const std::pair<size_t, size_t>& coords;
+	bool is_enemy;
 };
 
 #endif

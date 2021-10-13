@@ -19,7 +19,6 @@ class Action
 {
 public:
 	virtual ActionType getActionType() = 0;
-	virtual ~Action() = default;
 };
 
 #endif
