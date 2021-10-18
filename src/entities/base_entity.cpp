@@ -1,4 +1,5 @@
 #include "../../inc/entities/base_entity.h"
+#include "../../inc/actions/game_observer.h"
 
 BaseEntity::BaseEntity(size_t start_x, size_t start_y):
 	x{start_x}, y{start_y},
@@ -17,35 +18,21 @@ void BaseEntity::moveTo(size_t x, size_t y)
 void BaseEntity::spawn()
 {
 	ActionAddDrawable act(*this, false);
-	this->handleAction(act);
+	this->getObserver().handleAction(act);
 }
 
-void BaseEntity::decreaseHealth(int delta)
-{
-	this->health -= delta;
-}
 
-void BaseEntity::increaseHealth(int delta)
+void BaseEntity::changeHealth(int delta)
 {
 	this->health += delta;
 }
 
-void BaseEntity::decreaseShield(int delta)
-{
-	this->shield -= delta;
-}
-
-void BaseEntity::increaseShield(int delta)
+void BaseEntity::changeShield(int delta)
 {
 	this->shield += delta;
 }
 
-void BaseEntity::decreaseDamage(int delta)
-{
-	this->damage -= delta;
-}
-
-void BaseEntity::increaseDamage(int delta)
+void BaseEntity::changeDamage(int delta)
 {
 	this->damage += delta;
 }

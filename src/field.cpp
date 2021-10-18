@@ -1,4 +1,5 @@
 #include "../inc/field.h"
+#include "../inc/actions/game_observer.h"
 
 Field::Field(size_t width, size_t height)
 {
@@ -44,7 +45,7 @@ bool Field::onCellsAdded()
 		for (size_t x = 0; x < this->width; x++)
 		{
 			ActionAddDrawable act(this->getCell(x, y), true);
-			this->handleAction(act);
+			this->getObserver().handleAction(act);
 		}
 	}
 	return true;

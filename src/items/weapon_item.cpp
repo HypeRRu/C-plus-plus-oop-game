@@ -5,11 +5,13 @@ WeaponItem::WeaponItem(
 	size_t y,
 	size_t damage_increase
 ) : BaseItem(x, y), damage_increase{damage_increase}
-{}
+{
+	this->setView(std::make_shared<WeaponItemView>(x, y));
+}
 
 bool WeaponItem::onPickUp(BaseEntity& entity)
 {
-	entity.increaseDamage(this->damage_increase);
+	entity.changeDamage(this->damage_increase);
 	this->destroy();
 	return true;
 }

@@ -2,6 +2,7 @@
 #define SHIELD_ITEM_H
 
 #include "../items/base_item.h"
+#include "../views/shield_item_view.h"
 
 class ShieldItem: public BaseItem
 {

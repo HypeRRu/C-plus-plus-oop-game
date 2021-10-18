@@ -8,7 +8,6 @@ class ActionDeleteItem: public Action
 {
 public:
 	ActionDeleteItem(BaseItem& _item);
-	ActionType getActionType();
 
 	BaseItem& getItem() const;
 protected:

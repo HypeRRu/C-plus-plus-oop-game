@@ -5,7 +5,8 @@
 #include <vector>
 #include <string>
 
-#include "../interfaces/drawable.h"
+#include "../views/cell_view.h"
+#include "../views/base_drawable.h"
 
 enum class CellType {
 	RegularCell,
@@ -14,8 +15,9 @@ enum class CellType {
 };
 
 class BaseItem;
+class BaseEnemy;
 
-class Cell: virtual public Drawable
+class Cell: public BaseDrawable
 {
 public:
 	Cell(size_t x, size_t y, bool wall = false);
@@ -31,7 +33,9 @@ public:
 	Cell& operator =(Cell&& other);
 
 	void setItem(std::shared_ptr<BaseItem> _item);
+	void setEnemy(std::shared_ptr<BaseEnemy> _enemy);
 
+	std::shared_ptr<BaseEnemy> getEnemy() const;
 	BaseItem& getItem() const;
 	const size_t getX() const;
 	const size_t getY() const;
@@ -39,13 +43,12 @@ public:
 
 	void toggleWall();
 
-	virtual const std::string getTextureAlias() const;
-
 	virtual std::unique_ptr<Cell> createUniquePtr();
 protected:
 	size_t x, y;
 	bool wall;
 	std::shared_ptr<BaseItem> item;
+	std::shared_ptr<BaseEnemy> enemy;
 };
 
 #endif

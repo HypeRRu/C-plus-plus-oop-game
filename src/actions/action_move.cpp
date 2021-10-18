@@ -4,11 +4,6 @@ ActionMove::ActionMove(BaseEntity& entity, const std::pair<size_t, size_t>& coor
 	entity{entity}, coords{coords}, is_enemy{is_enemy}
 {}
 
-ActionType ActionMove::getActionType()
-{
-	return ActionType::moveAction;
-}
-
 BaseEntity& ActionMove::getEntity() const
 {
 	return this->entity;

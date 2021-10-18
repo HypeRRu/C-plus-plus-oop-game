@@ -1,7 +1,9 @@
 #include "../../inc/cells/start_cell.h"
 
 StartCell::StartCell(size_t x, size_t y) : Cell{x, y, false}
-{}
+{
+	this->setView(std::make_shared<StartCellView>(x, y));
+}
 
 CellType StartCell::getType()
 {
@@ -11,9 +13,4 @@ CellType StartCell::getType()
 std::unique_ptr<Cell> StartCell::createUniquePtr()
 {
 	return std::make_unique<StartCell>(*this);
-}
-
-const std::string StartCell::getTextureAlias() const
-{
-	return "cell_start";
 }

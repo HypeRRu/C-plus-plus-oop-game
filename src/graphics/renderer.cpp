@@ -66,7 +66,7 @@ void Renderer::addObject(
 	bool bg_object
 )
 {
-	const sf::Texture& texture = TextureManager::instance().get(object.getTextureAlias());
+	const sf::Texture& texture = TextureManager::instance().get(object.getView().getTextureAlias());
 	sf::Sprite sprite;
 
 	sprite.setPosition(

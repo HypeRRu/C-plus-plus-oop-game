@@ -5,9 +5,11 @@ DaemonEnemy::DaemonEnemy(size_t pos_x, size_t pos_y):
 		pos_x, pos_y,
 		200, 50, 150
 	)
-{}
-
-const std::string DaemonEnemy::getTextureAlias() const
 {
-	return "enemy_daemon";
+	this->setView(std::make_shared<DaemonEnemyView>(pos_x, pos_y));
+}
+
+std::shared_ptr<BaseEnemy> DaemonEnemy::getSharedPtr()
+{
+	return std::make_shared<DaemonEnemy>(*this);
 }

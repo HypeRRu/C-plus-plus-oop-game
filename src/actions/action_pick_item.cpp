@@ -3,11 +3,6 @@
 ActionPickItem::ActionPickItem(BaseEntity& entity, BaseItem& _item): 
 	entity{entity}, item{_item}
 {}
-
-ActionType ActionPickItem::getActionType()
-{
-	return ActionType::pickItemAction;
-}
 	
 BaseItem& ActionPickItem::getItem() const
 {

@@ -1,12 +1,14 @@
 #ifndef DRAWABLE_H
 #define DRAWABLE_H
 
-#include <string>
+#include "iview.h"
+#include <memory>
 
 class Drawable
 {
 public:
-	virtual const std::string getTextureAlias() const = 0;
+	virtual const IView& getView() const = 0;
+	virtual void setView(std::shared_ptr<IView> _view) = 0;
 	virtual const size_t getX() const = 0;
 	virtual const size_t getY() const = 0;
 };

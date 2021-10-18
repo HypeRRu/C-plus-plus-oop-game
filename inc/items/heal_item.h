@@ -2,6 +2,7 @@
 #define HEAL_ITEM_H
 
 #include "../items/base_item.h"
+#include "../views/heal_item_view.h"
 
 class HealItem: public BaseItem
 {

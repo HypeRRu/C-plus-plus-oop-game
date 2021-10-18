@@ -8,8 +8,7 @@ class ActionAttack: public Action
 {
 public:
 	ActionAttack(BaseEntity& entity1, BaseEntity& entity2);
-	ActionType getActionType();
-	
+
 	BaseEntity& getEntity1() const;
 	BaseEntity& getEntity2() const;
 protected:

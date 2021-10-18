@@ -2,6 +2,7 @@
 #define WEAPON_ITEM_H
 
 #include "../items/base_item.h"
+#include "../views/weapon_item_view.h"
 
 class WeaponItem: public BaseItem
 {

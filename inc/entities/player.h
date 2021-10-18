@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include "base_entity.h"
+#include "../views/player_view.h"
 
 class Player: 
 	public BaseEntity
@@ -11,8 +12,6 @@ public:
 	~Player() = default;
 
 	bool canPickItem();
-
-	const std::string getTextureAlias() const;
 };
 
 #endif

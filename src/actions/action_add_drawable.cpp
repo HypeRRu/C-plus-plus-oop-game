@@ -3,11 +3,6 @@
 ActionAddDrawable::ActionAddDrawable(Drawable& _drawable, bool is_background_object): 
 	drawable{_drawable}, is_background_object{is_background_object}
 {}
-	
-ActionType ActionAddDrawable::getActionType()
-{
-	return ActionType::addDrawableAction;
-}
 
 bool ActionAddDrawable::getIsBackground() const
 {

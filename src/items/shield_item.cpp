@@ -5,11 +5,13 @@ ShieldItem::ShieldItem(
 	size_t y,
 	size_t shield_increase
 ) : BaseItem(x, y), shield_increase{shield_increase}
-{}
+{
+	this->setView(std::make_shared<ShieldItemView>(x, y));
+}
 
 bool ShieldItem::onPickUp(BaseEntity& entity)
 {
-	entity.increaseShield(this->shield_increase);
+	entity.changeShield(this->shield_increase);
 	this->destroy();
 	return true;
 }

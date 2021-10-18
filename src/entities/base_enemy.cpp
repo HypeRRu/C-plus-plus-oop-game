@@ -1,4 +1,5 @@
 #include "../../inc/entities/base_enemy.h"
+#include "../../inc/actions/game_observer.h"
 
 BaseEnemy::BaseEnemy(
 	size_t pos_x, size_t pos_y,
@@ -13,9 +14,9 @@ BaseEnemy::BaseEnemy(
 	this->damage = damage;
 }
 
-void BaseEnemy::decreaseHealth(int delta)
+void BaseEnemy::changeHealth(int delta)
 {
-	BaseEntity::decreaseHealth(delta);
+	BaseEntity::changeHealth(delta);
 	if (this->getHealth() <= 0)
 		this->destroy();
 }
@@ -23,7 +24,7 @@ void BaseEnemy::decreaseHealth(int delta)
 void BaseEnemy::destroy()
 {
 	ActionDeleteEnemy act(*this);
-	this->handleAction(act);
+	this->getObserver().handleAction(act);
 }
 
 bool BaseEnemy::canPickItem()
@@ -31,10 +32,12 @@ bool BaseEnemy::canPickItem()
 	return false;
 }
 
+#include <iostream>
 bool BaseEnemy::update()
 {
-	std::srand(std::time(NULL));
-	size_t try_number = 0;
+	std::hash<BaseEnemy*> hash;
+	std::srand(std::time(NULL) + hash(this));
+	int try_number = 0;
 	size_t direction = 0;
 	while (try_number < 4)
 	{
@@ -52,8 +55,9 @@ bool BaseEnemy::update()
 						this->getY() - 1
 					}
 				);
-				if (this->handleAction(act))
+				if (this->getObserver().handleAction(act))
 					return true;
+				break;
 			}
 			case 1:
 			{
@@ -65,8 +69,9 @@ bool BaseEnemy::update()
 						this->getY() + 1
 					}
 				);
-				if (this->handleAction(act))
+				if (this->getObserver().handleAction(act))
 					return true;
+				break;
 			}
 			case 2:
 			{
@@ -78,8 +83,9 @@ bool BaseEnemy::update()
 						this->getY()
 					}
 				);
-				if (this->handleAction(act))
+				if (this->getObserver().handleAction(act))
 					return true;
+				break;
 			}
 			case 3:
 			{
@@ -91,9 +97,12 @@ bool BaseEnemy::update()
 						this->getY()
 					}
 				);
-				if (this->handleAction(act))
+				if (this->getObserver().handleAction(act))
 					return true;
+				break;
 			}
+			default:
+				break;
 		}
 	}
 	return false;

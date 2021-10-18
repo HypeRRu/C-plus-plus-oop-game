@@ -41,6 +41,7 @@ bool Game::run()
     std::chrono::system_clock::time_point updated = std::chrono::system_clock::now();
 
 	std::cout << "Running" << std::endl;
+	std::set<std::shared_ptr<BaseEnemy>> update_list;
 	while (running)
 	{
 		std::chrono::system_clock::time_point renderStarts = std::chrono::system_clock::now();
@@ -57,18 +58,30 @@ bool Game::run()
 				},
 				false
 			);
-			this->player->handleAction(act);
+			this->player->getObserver().handleAction(act);
 		}
 		if (std::chrono::system_clock::now() - updated >= 1.5s)
 		{
 			updated = std::chrono::system_clock::now();
-			for (auto enemy: this->getEnemies())
-			{			
-					enemy.second->update();
-			}
+			for (size_t y = 0; y < this->field->getHeight(); y++)
+			{
+				for (size_t x = 0; x < this->field->getWidth(); x++)
+				{	
+					auto enemy = this->field->getCell(x, y).getEnemy();
+					if (
+						enemy.get() != nullptr && 
+						update_list.find(enemy) == update_list.end()
+					)
+					{
+						enemy->update();
+						update_list.insert(enemy);
+					}
+				}
+			}		
 		}
 		running = this->getRenderer().renderFrame();
 		sleep_until(renderStarts + .045s); /* fps limiter */
+		update_list.clear();
 	}
 	return true;
 }
@@ -111,12 +124,17 @@ bool Game::placeItems()
 bool Game::placeEnemies()
 {
 	EnemiesGenerator enemies_generator(this->getField());
-	this->enemies = std::make_shared<enemies_map>(enemies_generator.generateEnemies());
-	this->observer->setEnemies(this->enemies);
-	for (auto enemy: this->getEnemies())
+	auto enemies = enemies_generator.generateEnemies();
+	/*this->enemies = std::make_shared<enemies_map>(enemies_generator.generateEnemies());
+	this->observer->setEnemies(this->enemies);*/
+	for (auto _enemy: enemies)
 	{
-		enemy.second->setObserver(this->observer);
-		enemy.second->spawn();
+		_enemy.second->setObserver(this->observer);
+		this->field->getCell(
+			_enemy.first.first,
+			_enemy.first.second
+		).setEnemy(_enemy.second);
+		_enemy.second->spawn();
 	}
 	return true;
 }
@@ -136,10 +154,10 @@ Player& Game::getPlayer() const
 	return *this->player.get();
 }
 
-std::map<std::pair<size_t, size_t>, enemy_sptr> Game::getEnemies() const
+/*std::map<std::pair<size_t, size_t>, enemy_sptr> Game::getEnemies() const
 {
 	return *this->enemies.get();
-}
+}*/
 
 std::shared_ptr<Field> Game::getFieldPtr() const
 {

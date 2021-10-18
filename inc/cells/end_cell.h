@@ -2,6 +2,7 @@
 #define END_H
 
 #include "cell.h"
+#include "../views/end_cell_view.h"
 
 class EndCell: public Cell
 {
@@ -10,8 +11,6 @@ public:
 	~EndCell() = default;
 
 	CellType getType();
-
-	const std::string getTextureAlias() const;
 
 	std::unique_ptr<Cell> createUniquePtr();
 };

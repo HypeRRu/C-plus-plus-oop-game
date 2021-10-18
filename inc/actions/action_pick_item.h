@@ -9,7 +9,6 @@ class ActionPickItem: public Action
 {
 public:
 	ActionPickItem(BaseEntity& entity, BaseItem& _item);
-	ActionType getActionType();
 	
 	BaseEntity& getEntity() const;
 	BaseItem& getItem() const;

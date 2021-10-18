@@ -2,6 +2,7 @@
 #define STARTCELL_H
 
 #include "cell.h"
+#include "../views/start_cell_view.h"
 
 class StartCell: public Cell
 {
@@ -10,8 +11,6 @@ public:
 	~StartCell() = default;
 
 	CellType getType();
-
-	const std::string getTextureAlias() const;
 
 	std::unique_ptr<Cell> createUniquePtr();
 };

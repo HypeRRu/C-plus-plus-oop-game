@@ -7,51 +7,17 @@ GameObserver::GameObserver(const Game& game_object)
 	this->player = game_object.getPlayerPtr();
 }
 
-void GameObserver::setEnemies(std::shared_ptr<std::map<std::pair<size_t, size_t>, enemy_sptr>> enemies)
-{
-	this->enemies = enemies;
-}
-
-std::map<std::pair<size_t, size_t>, enemy_sptr>& GameObserver::getEnemies()
-{
-	return *this->enemies.lock().get();
-}
-
 GameObserver::~GameObserver()
 {}
 
-bool GameObserver::handleAction(Action& action)
-{
-	switch (action.getActionType())
-	{
-		case ActionType::moveAction:
-			return this->handleActionMove(action);
-		case ActionType::attackAction:
-			return this->handleActionAttack(action);
-		case ActionType::deleteItemAction:
-			return this->handleActionDeleteItem(action);
-		case ActionType::deleteEnemyAction:
-			return this->handleActionDeleteEnemy(action);
-		case ActionType::pickItemAction:
-			return this->handleActionPickItem(action);
-		case ActionType::addDrawableAction:
-			return this->handleActionAddDrawable(action);
-		case ActionType::playerReachEndAction:
-			return this->handleActionPlayerReachEnd(action);
-
-		case ActionType::defaultAction:
-		default:
-			break;
-	}
-	return false;
-}
-
 bool GameObserver::moveLogicForEnemy(ActionMove& action)
 {
-	if (this->getEnemies().find(action.getCoords()) != this->getEnemies().end())
-	{
+	if (this->field->getCell(
+		action.getCoords().first,
+		action.getCoords().second
+	).getEnemy().get() != nullptr)
 		return false;
-	}
+
 	if (this->player->getX() == action.getCoords().first &&
 		this->player->getY() == action.getCoords().second)
 	{
@@ -62,15 +28,20 @@ bool GameObserver::moveLogicForEnemy(ActionMove& action)
 		this->handleAction(act);
 	}
 	/* changing array */
-	auto entity = this->getEnemies().extract(std::pair<size_t, size_t>{
+	this->field->getCell(
+		action.getCoords().first,
+		action.getCoords().second
+	).setEnemy(
+		this->field->getCell(
+			action.getEntity().getX(),
+			action.getEntity().getY()
+		).getEnemy()
+	);
+	this->field->getCell(
 		action.getEntity().getX(),
 		action.getEntity().getY()
-	});
-	if (!entity.empty())
-	{
-	    entity.key() = action.getCoords();
-	    this->getEnemies().insert(std::move(entity));
-	}
+	).setEnemy(nullptr);
+
 	return true;
 }
 
@@ -80,11 +51,11 @@ bool GameObserver::moveLogicForPlayer(ActionMove& action)
 		action.getCoords().first,
 		action.getCoords().second
 	);
-	if (this->getEnemies().find(action.getCoords()) != this->getEnemies().end())
+	if (target_cell.getEnemy().get())
 	{
 		ActionAttack act(
 			action.getEntity(),
-			*this->getEnemies().at(action.getCoords()).get()
+			*target_cell.getEnemy().get()
 		);
 		this->handleAction(act);
 		return false;
@@ -100,9 +71,8 @@ bool GameObserver::moveLogicForPlayer(ActionMove& action)
 	return true;
 }
 
-bool GameObserver::handleActionMove(Action& _action)
+bool GameObserver::handleAction(ActionMove& action)
 {
-	ActionMove& action = dynamic_cast<ActionMove&>(_action);
 	Cell& target_cell = this->field->getCell(
 		action.getCoords().first,
 		action.getCoords().second
@@ -110,7 +80,6 @@ bool GameObserver::handleActionMove(Action& _action)
 
 	if (target_cell.getHasWall())
 		return false;
-
 	if (action.getIsEnemy())
 	{
 		if (!this->moveLogicForEnemy(action))
@@ -129,7 +98,7 @@ bool GameObserver::handleActionMove(Action& _action)
 	ActionAddDrawable actDraw(action.getEntity());
 	this->handleAction(actDraw);
 
-	if (this->field->getEnd() == action.getCoords())
+	if (!action.getIsEnemy() && this->field->getEnd() == action.getCoords())
 	{
 		ActionPlayerReachEnd act;
 		return this->handleAction(act);
@@ -137,22 +106,20 @@ bool GameObserver::handleActionMove(Action& _action)
 	return true;
 }
 
-bool GameObserver::handleActionAttack(Action& _action)
+bool GameObserver::handleAction(ActionAttack& action)
 {
-	ActionAttack& action = dynamic_cast<ActionAttack&>(_action);
 	size_t damage = action.getEntity1().getDamage();
 	size_t shield = action.getEntity2().getShield();
 	int dhealth = damage - shield;
 	if (dhealth > 0)
-		action.getEntity2().decreaseHealth(dhealth);
+		action.getEntity2().changeHealth(-dhealth);
 	else
 		return false;
 	return true;
 }
 
-bool GameObserver::handleActionDeleteItem(Action& _action)
+bool GameObserver::handleAction(ActionDeleteItem& action)
 {
-	ActionDeleteItem& action = dynamic_cast<ActionDeleteItem&>(_action);
 	this->renderer->removeObject(action.getItem());
 	this->field->getCell(
 		action.getItem().getX(),
@@ -161,25 +128,18 @@ bool GameObserver::handleActionDeleteItem(Action& _action)
 	return true;
 }
 
-bool GameObserver::handleActionDeleteEnemy(Action& _action)
+bool GameObserver::handleAction(ActionDeleteEnemy& action)
 {
-	ActionDeleteEnemy& action = dynamic_cast<ActionDeleteEnemy&>(_action);
-	std::pair<size_t, size_t> coords{
+	this->renderer->removeObject(action.getEnemy());
+	this->field->getCell(
 		action.getEnemy().getX(),
 		action.getEnemy().getY()
-	};
-	this->renderer->removeObject(action.getEnemy());
-	auto it = this->getEnemies().find(coords);
-	if (it == this->getEnemies().end())
-		return false;
-	(*it).second = nullptr;
-	this->getEnemies().erase(it);
+	).setEnemy(nullptr);
 	return true;
 }
 
-bool GameObserver::handleActionPickItem(Action& _action)
+bool GameObserver::handleAction(ActionPickItem& action)
 {
-	ActionPickItem& action = dynamic_cast<ActionPickItem&>(_action);
 	if (!action.getEntity().canPickItem()) 
 		return false;
 	action.getItem().onPickUp(
@@ -188,9 +148,8 @@ bool GameObserver::handleActionPickItem(Action& _action)
 	return true;
 }
 
-bool GameObserver::handleActionAddDrawable(Action& _action)
+bool GameObserver::handleAction(ActionAddDrawable& action)
 {
-	ActionAddDrawable& action = dynamic_cast<ActionAddDrawable&>(_action);
 	this->renderer.get()->addObject(
 		action.getDrawable(),
 		60, 60,
@@ -199,7 +158,7 @@ bool GameObserver::handleActionAddDrawable(Action& _action)
 	return true;
 }
 
-bool GameObserver::handleActionPlayerReachEnd(Action& _action)
+bool GameObserver::handleAction(ActionPlayerReachEnd& action)
 {
 	std::cout << "End reached!" << std::endl;
 	return true;

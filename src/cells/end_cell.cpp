@@ -1,7 +1,9 @@
 #include "../../inc/cells/end_cell.h"
 
 EndCell::EndCell(size_t x, size_t y) : Cell{x, y, false}
-{}
+{
+	this->setView(std::make_shared<EndCellView>(x, y));
+}
 
 CellType EndCell::getType()
 {
@@ -11,9 +13,4 @@ CellType EndCell::getType()
 std::unique_ptr<Cell> EndCell::createUniquePtr()
 {
 	return std::make_unique<EndCell>(*this);
-}
-
-const std::string EndCell::getTextureAlias() const
-{
-	return "cell_end";
 }

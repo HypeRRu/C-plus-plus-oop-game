@@ -4,11 +4,6 @@ ActionDeleteEnemy::ActionDeleteEnemy(BaseEnemy& _enemy):
 	enemy{_enemy}
 {}
 
-ActionType ActionDeleteEnemy::getActionType()
-{
-	return ActionType::deleteEnemyAction;
-}
-
 BaseEnemy& ActionDeleteEnemy::getEnemy() const
 {
 	return this->enemy;

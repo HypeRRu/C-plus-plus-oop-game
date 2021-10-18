@@ -7,7 +7,6 @@ class ActionPlayerReachEnd: public Action
 {
 public:
 	ActionPlayerReachEnd() = default;
-	ActionType getActionType();
 };
 
 #endif

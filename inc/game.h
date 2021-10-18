@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <set>
 #include <ctime>
 #include <chrono>
 #include <thread>
@@ -46,7 +47,6 @@ public:
 	Renderer& getRenderer() const;
 	Field& getField() const;
 	Player& getPlayer() const;
-	enemies_map getEnemies() const;
 	std::shared_ptr<Field> getFieldPtr() const;
 	std::shared_ptr<Renderer> getRendererPtr() const;
 	std::shared_ptr<Player> getPlayerPtr() const;
@@ -56,7 +56,6 @@ private:
 	FieldGenerator generator;
 	std::shared_ptr<GameObserver> observer;
 	std::shared_ptr<Player> player;
-	std::shared_ptr<enemies_map> enemies;
 };
 
 #endif

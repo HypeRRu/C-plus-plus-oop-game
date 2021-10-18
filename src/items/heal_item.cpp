@@ -5,11 +5,13 @@ HealItem::HealItem(
 	size_t y,
 	size_t healing_amount
 ) : BaseItem(x, y), healing_amount{healing_amount}
-{}
+{
+	this->setView(std::make_shared<HealItemView>(x, y));
+}
 
 bool HealItem::onPickUp(BaseEntity& entity)
 {
-	entity.increaseHealth(this->healing_amount);
+	entity.changeHealth(this->healing_amount);
 	this->destroy();
 	return true;
 }

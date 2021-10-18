@@ -21,17 +21,13 @@ public:
 	GameObserver(const Game& game_object);
 	~GameObserver();
 
-	void setEnemies(std::shared_ptr<std::map<std::pair<size_t, size_t>, enemy_sptr>> enemies);
-	std::map<std::pair<size_t, size_t>, enemy_sptr>& getEnemies();
-	bool handleAction(Action& action);
-
-	bool handleActionMove(Action& _action);
-	bool handleActionAttack(Action& _action);
-	bool handleActionDeleteItem(Action& _action);
-	bool handleActionDeleteEnemy(Action& _action);
-	bool handleActionPickItem(Action& _action);
-	bool handleActionAddDrawable(Action& _action);
-	bool handleActionPlayerReachEnd(Action& _action);
+	bool handleAction(ActionMove& action);
+	bool handleAction(ActionAttack& action);
+	bool handleAction(ActionPickItem& action);
+	bool handleAction(ActionDeleteItem& action);
+	bool handleAction(ActionDeleteEnemy& action);
+	bool handleAction(ActionAddDrawable& action);
+	bool handleAction(ActionPlayerReachEnd& action);
 protected:
 	bool moveLogicForPlayer(ActionMove& action);
 	bool moveLogicForEnemy(ActionMove& action);
@@ -39,7 +35,6 @@ protected:
 	std::shared_ptr<Field> field;
 	std::shared_ptr<Renderer> renderer;
 	std::shared_ptr<Player> player;
-	std::weak_ptr<std::map<std::pair<size_t, size_t>, enemy_sptr>> enemies;
 };
 
 #endif

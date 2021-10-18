@@ -10,7 +10,6 @@ class ActionDeleteEnemy: public Action
 {
 public:
 	ActionDeleteEnemy(BaseEnemy& _enemy);
-	ActionType getActionType();
 
 	BaseEnemy& getEnemy() const;
 protected:
