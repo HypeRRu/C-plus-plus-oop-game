@@ -5,8 +5,7 @@
 #include <vector>
 #include <string>
 
-#include "../views/cell_view.h"
-#include "../views/base_drawable.h"
+#include "../interfaces/item.h"
 
 enum class CellType {
 	RegularCell,
@@ -14,10 +13,7 @@ enum class CellType {
 	EndCell
 };
 
-class BaseItem;
-class BaseEnemy;
-
-class Cell: public BaseDrawable
+class Cell
 {
 public:
 	Cell(size_t x, size_t y, bool wall = false);
@@ -32,31 +28,24 @@ public:
 	Cell& operator =(const Cell& other);
 	Cell& operator =(Cell&& other);
 
-	void setItem(std::shared_ptr<BaseItem> _item);
-	void setEnemy(std::shared_ptr<BaseEnemy> _enemy);
-
-	std::shared_ptr<BaseEnemy> getEnemy() const;
-	BaseItem& getItem() const;
-	const size_t getX() const;
-	const size_t getY() const;
+	size_t getX() const;
+	size_t getY() const;
 	bool   getHasWall() const;
 
 <<<<<<< HEAD
 =======
 	void toggleWall();
 
-<<<<<<< HEAD:inc/cells/cell.h
-=======
 >>>>>>> ac1c973d8b23976949ff75730bff368231784f0c
 	virtual std::string getTextureAlias() const;
 
->>>>>>> master:cells/cell.h
 	virtual std::unique_ptr<Cell> createUniquePtr();
 protected:
+	using item_ptr = std::shared_ptr<Item>;
+
 	size_t x, y;
 	bool wall;
-	std::shared_ptr<BaseItem> item;
-	std::shared_ptr<BaseEnemy> enemy;
+	std::vector<item_ptr> items;
 };
 
 #endif

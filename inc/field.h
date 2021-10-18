@@ -28,7 +28,11 @@ public:
 
 	size_t getWidth() const;
 	size_t getHeight() const;
+<<<<<<< HEAD
+	const Cell&  getCell(size_t x, size_t y) const;
+=======
 	Cell&  getCell(size_t x, size_t y) const;
+<<<<<<< HEAD:inc/field.h
 
 	CellsIterator& createIterator();
 
@@ -39,6 +43,9 @@ public:
 
 	const std::pair<size_t, size_t>& getStart() const;
 	const std::pair<size_t, size_t>& getEnd() const;
+=======
+>>>>>>> ac1c973d8b23976949ff75730bff368231784f0c
+>>>>>>> master:field.h
 private:
 	using cell_ptr = std::unique_ptr<Cell>;
 	using cell_row = std::unique_ptr<cell_ptr[]>;
