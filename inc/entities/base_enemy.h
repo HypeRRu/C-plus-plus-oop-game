@@ -23,7 +23,7 @@ public:
 	void changeHealth(int delta);
 
 	void destroy();
-	bool canPickItem();
+	bool canPickItem() const;
 
 	bool update();
 

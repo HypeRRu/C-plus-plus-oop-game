@@ -8,12 +8,7 @@ Player::Player(size_t start_x, size_t start_y):
 	this->setView(std::make_shared<PlayerView>(start_x, start_y));
 }
 
-bool Player::canPickItem()
+bool Player::canPickItem() const
 {
 	return true;
 }
-
-/*const std::string Player::getTextureAlias() const
-{
-	return "player";
-}*/

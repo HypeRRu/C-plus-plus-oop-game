@@ -12,10 +12,13 @@
 #include "action_delete_enemy.h"
 #include "action_add_drawable.h"
 #include "action_player_reach_end.h"
+#include "../logger/logger.h"
+
+#include "../interfaces/imanager.h"
 
 class Game;
 
-class GameObserver
+class GameObserver: public IManager
 {
 public:
 	GameObserver(const Game& game_object);

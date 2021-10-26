@@ -11,10 +11,14 @@ public:
 
 	BaseEntity& getEntity1() const;
 	BaseEntity& getEntity2() const;
+
+	void setDamageCaused(int _damage);
+	int getDamageCaused() const;
 protected:
 	/* context */
 	BaseEntity& entity1;
 	BaseEntity& entity2;
+	int damage_caused;
 };
 
 #endif

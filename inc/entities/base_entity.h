@@ -17,7 +17,7 @@ public:
 
 	void moveTo(size_t x, size_t y);
 	void spawn();
-	virtual bool canPickItem() = 0;
+	virtual bool canPickItem() const = 0;
 	virtual void changeHealth(int delta);
 	void changeShield(int delta);
 	void changeDamage(int delta);

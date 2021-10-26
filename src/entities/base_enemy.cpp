@@ -27,7 +27,7 @@ void BaseEnemy::destroy()
 	this->getObserver().handleAction(act);
 }
 
-bool BaseEnemy::canPickItem()
+bool BaseEnemy::canPickItem() const
 {
 	return false;
 }
