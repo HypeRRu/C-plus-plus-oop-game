@@ -15,12 +15,13 @@ std::shared_ptr<ILogStream> ConsoleStream::getStreamPtr() const
 	return std::make_shared<ConsoleStream>(*this);
 }
 
-std::ostream& ConsoleStream::getStream() const
-{
-	return this->stream;
-}
-
 bool ConsoleStream::isStreamOpen() const
 {
 	return true;
+}
+
+void ConsoleStream::writeLog(const std::string& log)
+{
+	if (this->isStreamOpen())
+		this->stream << log;
 }

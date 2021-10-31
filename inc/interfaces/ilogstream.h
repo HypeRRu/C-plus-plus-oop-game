@@ -7,9 +7,9 @@
 class ILogStream
 {
 public:
-	virtual std::ostream& getStream() const = 0;
 	virtual std::shared_ptr<ILogStream> getStreamPtr() const = 0;
 	virtual bool isStreamOpen() const = 0;
+	virtual void writeLog(const std::string& log) = 0;
 	virtual ~ILogStream() = default;
 };
 

@@ -2,13 +2,10 @@
 
 std::ostream& operator <<(std::ostream& stream, const BaseEntity& object)
 {
-	stream << "[ENTITY][" << &object << "]";
+	stream << "[ENTITY][" << object.getX() << "; " << object.getY() << "]";
 	if (dynamic_cast<const Player*>(&object))
 	{
 		stream << "[PLAYER]";
-	} else
-	{
-		stream << "";
 	}
 	
 	return stream;
@@ -16,7 +13,7 @@ std::ostream& operator <<(std::ostream& stream, const BaseEntity& object)
 
 std::ostream& operator <<(std::ostream& stream, const BaseItem& object)
 {
-	stream << "[ITEM][" << &object << "]";
+	stream << "[ITEM][" << object.getX() << "; " << object.getY() << "]";
 	return stream;
 }
 

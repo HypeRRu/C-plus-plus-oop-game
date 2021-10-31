@@ -59,6 +59,12 @@ void Logger::setLogAll(bool state)
 	this->log_all = state;
 }
 
+void Logger::write(const std::string& log)
+{
+	for (std::pair<std::string, stream_ptr> stream: this->log_streams)
+		stream.second->writeLog(log);
+}
+
 
 bool Logger::handleAction(ActionMove& action)
 {
@@ -68,15 +74,13 @@ bool Logger::handleAction(ActionMove& action)
 	)
 		return false;
 
-	for (std::pair<std::string, stream_ptr> stream: this->log_streams)
-	{
-		if (!stream.second->isStreamOpen())
-			continue;
-		stream.second->getStream() << action.getEntity()
-			<< " moved to "
-			<< action.getCoords() 
-			<< std::endl;
-	}
+	std::stringstream buffer;
+	buffer << action.getEntity()
+		<< " moved to "
+		<< action.getCoords() 
+		<< std::endl;
+	
+	this->write(buffer.str());
 	return true;
 }
 
@@ -89,16 +93,14 @@ bool Logger::handleAction(ActionAttack& action)
 	)
 		return false;
 
-	for (std::pair<std::string, stream_ptr> stream: this->log_streams)
-	{
-		if (!stream.second->isStreamOpen())
-			continue;
-		stream.second->getStream() << action.getEntity1() 
-			<< " attacked " << action.getEntity2()
-			<< " and caused " << action.getDamageCaused() << "dmg"
-			<< ", hp left: " << action.getEntity2().getHealth() - action.getDamageCaused()
-			<< std::endl;
-	}
+	std::stringstream buffer;
+	buffer << action.getEntity1() 
+		<< " attacked " << action.getEntity2()
+		<< " and caused " << action.getDamageCaused() << "dmg"
+		<< ", hp left: " << action.getEntity2().getHealth() - action.getDamageCaused()
+		<< std::endl;
+
+	this->write(buffer.str());
 	return true;
 }
 
@@ -110,14 +112,12 @@ bool Logger::handleAction(ActionDeleteItem& action)
 	)
 		return false;
 
-	for (std::pair<std::string, stream_ptr> stream: this->log_streams)
-	{
-		if (!stream.second->isStreamOpen())
-			continue;
-		stream.second->getStream() << action.getItem() 
-			<< " deleted"
-			<< std::endl;
-	}
+	std::stringstream buffer;
+	buffer << action.getItem() 
+		<< " deleted"
+		<< std::endl;
+
+	this->write(buffer.str());
 	return true;
 }
 
@@ -129,14 +129,12 @@ bool Logger::handleAction(ActionDeleteEnemy& action)
 	)
 		return false;
 
-	for (std::pair<std::string, stream_ptr> stream: this->log_streams)
-	{
-		if (!stream.second->isStreamOpen())
-			continue;
-		stream.second->getStream() << action.getEnemy() 
-			<< " deleted"
-			<< std::endl;
-	}
+	std::stringstream buffer;
+	buffer << action.getEnemy() 
+		<< " deleted"
+		<< std::endl;
+
+	this->write(buffer.str());
 	return true;
 }
 
@@ -176,26 +174,20 @@ bool Logger::handleAction(ActionPickItem& action)
 	}
 	characteristic += item.getEffect();
 
-	for (std::pair<std::string, stream_ptr> stream: this->log_streams)
-	{
-		if (!stream.second->isStreamOpen())
-			continue;
-		stream.second->getStream() << action.getEntity() 
-			<< " picked "
-			<< item << item_type
-			<< ", " << item_effect << characteristic
-			<< std::endl;
-	}
+	std::stringstream buffer;
+	buffer << action.getEntity() 
+		<< " picked "
+		<< item << item_type
+		<< ", " << item_effect << characteristic
+		<< std::endl;
+
+	this->write(buffer.str());
 	return true;
 }
 
 bool Logger::handleAction(ActionAddDrawable& action)
 {
-	for (std::pair<std::string, stream_ptr> stream: this->log_streams)
-	{
-		if (!stream.second->isStreamOpen())
-			continue;
-	}
+	// this->write();
 	return true;
 }
 
@@ -207,14 +199,12 @@ bool Logger::handleAction(ActionPlayerReachEnd& action)
 	)
 		return false;
 
-	for (std::pair<std::string, stream_ptr> stream: this->log_streams)
-	{
-		if (!stream.second->isStreamOpen())
-			continue;
-		stream.second->getStream() << action.getEntity()
-			<< " reached end cell "
-			<< action.getCoords() 
-			<< std::endl;
-	}
+	std::stringstream buffer;
+	buffer << action.getEntity()
+		<< " reached end cell "
+		<< action.getCoords() 
+		<< std::endl;
+
+	this->write(buffer.str());
 	return true;
 }

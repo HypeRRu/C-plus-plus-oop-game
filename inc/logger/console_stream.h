@@ -11,9 +11,9 @@ public:
 	~ConsoleStream();
 
 	std::shared_ptr<ILogStream> getStreamPtr() const;
-	std::ostream& getStream() const;
 
 	bool isStreamOpen() const;
+	void writeLog(const std::string& log);
 protected:
 	std::ostream& stream;
 };

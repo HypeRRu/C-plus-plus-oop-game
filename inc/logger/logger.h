@@ -24,6 +24,7 @@
 #include <map>
 #include <vector>
 #include <functional>
+#include <sstream>
 
 class Logger: public IManager
 {
@@ -42,6 +43,8 @@ public:
 	bool handleAction(ActionPickItem& action);
 	bool handleAction(ActionAddDrawable& action);
 	bool handleAction(ActionPlayerReachEnd& action);
+
+	void write(const std::string& log);
 
 	void addStream(stream_ptr stream, const std::string& key = "default");
 	void removeStream(const std::string& key);

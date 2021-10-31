@@ -91,12 +91,12 @@ bool GameObserver::handleAction(ActionMove& action)
 			return true;
 	}
 
+	Logger::instance().handleAction(action);
+
 	action.getEntity().moveTo(
 		action.getCoords().first,
 		action.getCoords().second
 	);
-
-	Logger::instance().handleAction(action);
 
 	ActionAddDrawable actDraw(action.getEntity());
 	this->handleAction(actDraw);
