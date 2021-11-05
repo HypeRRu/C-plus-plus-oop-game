@@ -14,12 +14,10 @@ public:
 	);
 
 	bool onPickUp(BaseEntity& entity);
-	const std::string getTextureAlias() const;
-	const size_t getDamageIncrease() const;
+	const int getEffect() const;
 
+	ItemType getItemType() const;
 	std::shared_ptr<BaseItem> getSharedPtr();
-protected:
-	size_t damage_increase;
 };
 
 #endif

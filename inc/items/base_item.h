@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "../interfaces/item.h"
-// #include "../interfaces/drawable.h"
 #include "../actions/base_observed.h"
 #include "../actions/action_add_drawable.h"
 #include "../cells/cell.h"
@@ -20,15 +19,18 @@ class BaseItem:
 {
 public:
 	BaseItem(size_t x, size_t y);
+	virtual ~BaseItem() = default;
 
 	virtual bool onPickUp(BaseEntity& entity) = 0;
 	bool onAdd();
 	void destroy();
+	virtual const int getEffect() const = 0;
 	
 	const size_t getX() const;
 	const size_t getY() const;
 
 	virtual std::shared_ptr<BaseItem> getSharedPtr() = 0;
+	virtual ItemType getItemType() const = 0;
 
 	BaseItem(const BaseItem& other);
 	BaseItem(BaseItem&& other);
@@ -37,6 +39,7 @@ public:
 protected:
 	size_t x;
 	size_t y;
+	int effect;
 };
 
 #endif

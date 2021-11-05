@@ -2,7 +2,7 @@
 #include "../../inc/actions/game_observer.h"
 
 BaseItem::BaseItem(size_t x, size_t y):
-	x{x}, y{y}
+	x{x}, y{y}, effect{0}
 {}
 
 bool BaseItem::onAdd()
@@ -28,11 +28,11 @@ const size_t BaseItem::getY() const
 }
 
 BaseItem::BaseItem(const BaseItem& other): BaseDrawable(other),
-	x{x}, y{y}
+	x{other.x}, y{other.y}, effect{effect}
 {}
 
 BaseItem::BaseItem(BaseItem&& other): BaseDrawable(other),
-	x{x}, y{y}
+	x{other.x}, y{other.y}
 {}
 
 BaseItem& BaseItem::operator =(const BaseItem& other)
@@ -43,6 +43,7 @@ BaseItem& BaseItem::operator =(const BaseItem& other)
 	BaseDrawable::operator=(other);
 	this->x = other.x;
 	this->y = other.y;
+	this->effect = other.effect;
 
 	return *this;
 }
@@ -55,6 +56,7 @@ BaseItem& BaseItem::operator =(BaseItem&& other)
 	BaseDrawable::operator=(other);
 	std::swap(this->x, other.x);
 	std::swap(this->y, other.y);
+	std::swap(this->effect, other.effect);
 	
 	return *this;
 }

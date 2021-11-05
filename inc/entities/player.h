@@ -11,7 +11,7 @@ public:
 	Player(size_t start_x, size_t start_y);
 	~Player() = default;
 
-	bool canPickItem();
+	bool canPickItem() const;
 };
 
 #endif

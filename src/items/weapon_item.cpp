@@ -4,26 +4,27 @@ WeaponItem::WeaponItem(
 	size_t x,
 	size_t y,
 	size_t damage_increase
-) : BaseItem(x, y), damage_increase{damage_increase}
+) : BaseItem(x, y)
 {
 	this->setView(std::make_shared<WeaponItemView>(x, y));
+	this->effect = damage_increase;
 }
 
 bool WeaponItem::onPickUp(BaseEntity& entity)
 {
-	entity.changeDamage(this->damage_increase);
+	entity.changeDamage(this->effect);
 	this->destroy();
 	return true;
 }
 
-const std::string WeaponItem::getTextureAlias() const
+const int WeaponItem::getEffect() const
 {
-	return "weapon_item";
+	return this->effect;
 }
 
-const size_t WeaponItem::getDamageIncrease() const
+ItemType WeaponItem::getItemType() const
 {
-	return this->damage_increase;
+	return ItemType::WeaponItem;
 }
 
 std::shared_ptr<BaseItem> WeaponItem::getSharedPtr()

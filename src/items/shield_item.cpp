@@ -4,26 +4,27 @@ ShieldItem::ShieldItem(
 	size_t x,
 	size_t y,
 	size_t shield_increase
-) : BaseItem(x, y), shield_increase{shield_increase}
+) : BaseItem(x, y)
 {
 	this->setView(std::make_shared<ShieldItemView>(x, y));
+	this->effect = shield_increase;
 }
 
 bool ShieldItem::onPickUp(BaseEntity& entity)
 {
-	entity.changeShield(this->shield_increase);
+	entity.changeShield(this->effect);
 	this->destroy();
 	return true;
 }
 
-const std::string ShieldItem::getTextureAlias() const
+const int ShieldItem::getEffect() const
 {
-	return "shield_item";
+	return this->effect;
 }
 
-const size_t ShieldItem::getShieldIncrease() const
+ItemType ShieldItem::getItemType() const
 {
-	return this->shield_increase;
+	return ItemType::ShieldItem;
 }
 
 std::shared_ptr<BaseItem> ShieldItem::getSharedPtr()

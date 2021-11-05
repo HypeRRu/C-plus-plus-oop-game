@@ -91,16 +91,22 @@ bool GameObserver::handleAction(ActionMove& action)
 			return true;
 	}
 
+	Logger::instance().handleAction(action);
+
 	action.getEntity().moveTo(
 		action.getCoords().first,
 		action.getCoords().second
 	);
+
 	ActionAddDrawable actDraw(action.getEntity());
 	this->handleAction(actDraw);
 
 	if (!action.getIsEnemy() && this->field->getEnd() == action.getCoords())
 	{
-		ActionPlayerReachEnd act;
+		ActionPlayerReachEnd act(
+			action.getEntity(), 
+			action.getCoords()
+		);
 		return this->handleAction(act);
 	}
 	return true;
@@ -111,11 +117,14 @@ bool GameObserver::handleAction(ActionAttack& action)
 	size_t damage = action.getEntity1().getDamage();
 	size_t shield = action.getEntity2().getShield();
 	int dhealth = damage - shield;
+	action.setDamageCaused(dhealth > 0 ? dhealth : 0);
+	
+	Logger::instance().handleAction(action);
+
 	if (dhealth > 0)
 		action.getEntity2().changeHealth(-dhealth);
-	else
-		return false;
-	return true;
+
+	return dhealth > 0;
 }
 
 bool GameObserver::handleAction(ActionDeleteItem& action)
@@ -125,6 +134,8 @@ bool GameObserver::handleAction(ActionDeleteItem& action)
 		action.getItem().getX(),
 		action.getItem().getY()
 	).setItem(nullptr);
+
+	Logger::instance().handleAction(action);
 	return true;
 }
 
@@ -135,13 +146,17 @@ bool GameObserver::handleAction(ActionDeleteEnemy& action)
 		action.getEnemy().getX(),
 		action.getEnemy().getY()
 	).setEnemy(nullptr);
+
+	Logger::instance().handleAction(action);
 	return true;
 }
 
 bool GameObserver::handleAction(ActionPickItem& action)
 {
 	if (!action.getEntity().canPickItem()) 
-		return false;
+		return false;	
+	Logger::instance().handleAction(action);
+
 	action.getItem().onPickUp(
 		action.getEntity()
 	);
@@ -160,6 +175,6 @@ bool GameObserver::handleAction(ActionAddDrawable& action)
 
 bool GameObserver::handleAction(ActionPlayerReachEnd& action)
 {
-	std::cout << "End reached!" << std::endl;
+	Logger::instance().handleAction(action);
 	return true;
 }

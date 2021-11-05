@@ -10,3 +10,13 @@ GameObserver& BaseObserved::getObserver() const
 {
 	return *this->observer.lock().get();
 }
+
+bool BaseObserved::operator ==(const BaseObserved& other) const
+{
+	return this == &other;
+}
+
+bool BaseObserved::operator !=(const BaseObserved& other) const
+{
+	return this != &other;
+}

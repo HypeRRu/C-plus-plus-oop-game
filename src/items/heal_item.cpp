@@ -4,26 +4,27 @@ HealItem::HealItem(
 	size_t x,
 	size_t y,
 	size_t healing_amount
-) : BaseItem(x, y), healing_amount{healing_amount}
+) : BaseItem(x, y)
 {
 	this->setView(std::make_shared<HealItemView>(x, y));
+	this->effect = healing_amount;
 }
 
 bool HealItem::onPickUp(BaseEntity& entity)
 {
-	entity.changeHealth(this->healing_amount);
+	entity.changeHealth(this->effect);
 	this->destroy();
 	return true;
 }
 
-const std::string HealItem::getTextureAlias() const
+const int HealItem::getEffect() const
 {
-	return "heal_item";
+	return this->effect;
 }
 
-const size_t HealItem::getHealingAmount() const
+ItemType HealItem::getItemType() const
 {
-	return this->healing_amount;
+	return ItemType::HealItem;
 }
 
 std::shared_ptr<BaseItem> HealItem::getSharedPtr()

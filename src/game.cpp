@@ -25,7 +25,15 @@ Game::Game() : generator{width, height}
 	this->placeItems();
 	this->placeEnemies();
 
+	Logger::instance().subscribeObject(this->getPlayer());
+
 	this->player->spawn();
+
+	Logger::instance().addStream(std::make_shared<FileStream>("/home/hyper/C++/oop_labs/log.txt"), "fs");
+	// Logger::instance().addStream(std::make_shared<FileStream>("/home/hyper/C++/oop_labs/log2.txt"), "fs2");
+	// Logger::instance().removeStream("default");
+	Logger::instance().unsubscribeObject(this->getPlayer());
+	Logger::instance().setLogAll(true);
 }
 
 bool Game::run()
@@ -40,7 +48,6 @@ bool Game::run()
     bool running = true;
     std::chrono::system_clock::time_point updated = std::chrono::system_clock::now();
 
-	std::cout << "Running" << std::endl;
 	std::set<std::shared_ptr<BaseEnemy>> update_list;
 	while (running)
 	{
@@ -117,6 +124,8 @@ bool Game::placeItems()
 			_item.first.first,
 			_item.first.second
 		).setItem(_item.second);
+
+		Logger::instance().subscribeObject(*_item.second.get());
 	}
 	return true;
 }
@@ -125,8 +134,6 @@ bool Game::placeEnemies()
 {
 	EnemiesGenerator enemies_generator(this->getField());
 	auto enemies = enemies_generator.generateEnemies();
-	/*this->enemies = std::make_shared<enemies_map>(enemies_generator.generateEnemies());
-	this->observer->setEnemies(this->enemies);*/
 	for (auto _enemy: enemies)
 	{
 		_enemy.second->setObserver(this->observer);
@@ -153,11 +160,6 @@ Player& Game::getPlayer() const
 {
 	return *this->player.get();
 }
-
-/*std::map<std::pair<size_t, size_t>, enemy_sptr> Game::getEnemies() const
-{
-	return *this->enemies.get();
-}*/
 
 std::shared_ptr<Field> Game::getFieldPtr() const
 {

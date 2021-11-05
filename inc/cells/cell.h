@@ -41,16 +41,8 @@ public:
 	const size_t getY() const;
 	bool   getHasWall() const;
 
-<<<<<<< HEAD
-=======
 	void toggleWall();
 
-<<<<<<< HEAD:inc/cells/cell.h
-=======
->>>>>>> ac1c973d8b23976949ff75730bff368231784f0c
-	virtual std::string getTextureAlias() const;
-
->>>>>>> master:cells/cell.h
 	virtual std::unique_ptr<Cell> createUniquePtr();
 protected:
 	size_t x, y;

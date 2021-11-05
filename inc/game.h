@@ -27,6 +27,10 @@
 
 #include "actions/game_observer.h"
 
+
+#include "logger/console_stream.h"
+#include "logger/file_stream.h"
+
 class GameObserver;
 class Field;
 class Renderer;
