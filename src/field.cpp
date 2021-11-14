@@ -44,7 +44,8 @@ bool Field::onCellsAdded()
 	{
 		for (size_t x = 0; x < this->width; x++)
 		{
-			ActionAddDrawable act(this->getCell(x, y), true);
+			size_t draw_layer = 0; /* background layer */
+			ActionAddDrawable act(this->getCell(x, y), draw_layer);
 			this->getObserver().handleAction(act);
 		}
 	}

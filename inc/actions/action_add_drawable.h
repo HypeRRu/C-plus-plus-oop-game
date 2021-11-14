@@ -7,12 +7,12 @@
 class ActionAddDrawable: public Action
 {
 public:
-	ActionAddDrawable(Drawable& _drawable, bool is_background_object = false);
+	ActionAddDrawable(Drawable& _drawable, size_t draw_layer = 0);
 	Drawable& getDrawable() const;
-	bool getIsBackground() const;
+	size_t getDrawLayer() const;
 protected:
 	Drawable& drawable;
-	bool is_background_object;
+	size_t draw_layer;
 };
 
 #endif

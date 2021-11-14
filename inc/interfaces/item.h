@@ -8,7 +8,8 @@ enum class ItemType
 {
 	HealItem,
 	ShieldItem,
-	WeaponItem
+	WeaponItem,
+	CoinItem
 };
 
 class Item

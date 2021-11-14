@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <iostream>
-#include "../game.h"
+#include "../states/state_gameplay.h"
 #include "action.h"
 #include "action_attack.h"
 #include "action_move.h"
@@ -16,12 +16,13 @@
 
 #include "../interfaces/imanager.h"
 
-class Game;
+// class Game;
+class StateGameplay;
 
 class GameObserver: public IManager
 {
 public:
-	GameObserver(const Game& game_object);
+	GameObserver(StateGameplay& game_object);
 	~GameObserver();
 
 	bool handleAction(ActionMove& action);
@@ -38,6 +39,8 @@ protected:
 	std::shared_ptr<Field> field;
 	std::shared_ptr<Renderer> renderer;
 	std::shared_ptr<Player> player;
+
+	StateGameplay& game_object;
 };
 
 #endif

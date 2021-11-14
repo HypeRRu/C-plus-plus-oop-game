@@ -21,10 +21,12 @@ public:
 	virtual void changeHealth(int delta);
 	void changeShield(int delta);
 	void changeDamage(int delta);
+	void changeMoneyPicked(int delta);
 
 	int getHealth() const;
 	int getDamage() const;
 	int getShield() const;
+	int getMoneyPicked() const;
 
 	const size_t getX() const;
 	const size_t getY() const;
@@ -35,6 +37,7 @@ protected:
 	int health;
 	int shield;
 	int damage;
+	int money_picked;
 };
 
 #endif

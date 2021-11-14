@@ -3,7 +3,8 @@
 
 BaseEntity::BaseEntity(size_t start_x, size_t start_y):
 	x{start_x}, y{start_y},
-	health{100}, shield{100}, damage{100}
+	health{100}, shield{100}, 
+	damage{100}, money_picked{0}
 {}
 
 BaseEntity::~BaseEntity()
@@ -17,7 +18,8 @@ void BaseEntity::moveTo(size_t x, size_t y)
 
 void BaseEntity::spawn()
 {
-	ActionAddDrawable act(*this, false);
+	size_t draw_layer = 2;
+	ActionAddDrawable act(*this, draw_layer);
 	this->getObserver().handleAction(act);
 }
 
@@ -25,6 +27,8 @@ void BaseEntity::spawn()
 void BaseEntity::changeHealth(int delta)
 {
 	this->health += delta;
+	if (this->health < 0)
+		this->health = 0;
 }
 
 void BaseEntity::changeShield(int delta)
@@ -35,6 +39,11 @@ void BaseEntity::changeShield(int delta)
 void BaseEntity::changeDamage(int delta)
 {
 	this->damage += delta;
+}
+
+void BaseEntity::changeMoneyPicked(int delta)
+{
+	this->money_picked += delta;
 }
 
 int BaseEntity::getHealth() const
@@ -50,6 +59,11 @@ int BaseEntity::getDamage() const
 int BaseEntity::getShield() const
 {
 	return this->shield;
+}
+
+int BaseEntity::getMoneyPicked() const
+{
+	return this->money_picked;
 }
 
 const size_t BaseEntity::getX() const

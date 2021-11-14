@@ -1,6 +1,9 @@
 #ifndef FIELD_GENERATOR_H
 #define FIELD_GENERATOR_H
 
+#include "../game_config.h"
+#include "random_stuff_generator.h"
+
 #include "../cells/cell.h"
 #include "../cells/end_cell.h"
 #include "../cells/start_cell.h"
@@ -9,8 +12,6 @@
 #include "../items/heal_item.h"
 
 #include <vector>
-#include <cstdlib>
-#include <ctime>
 
 using cell_sptr = std::shared_ptr<Cell>;
 
@@ -18,7 +19,7 @@ class FieldGenerator
 {
 public:
 	
-	FieldGenerator(size_t width = 0, size_t height = 0, double wall_chance = 0.1);
+	FieldGenerator(size_t width = 0, size_t height = 0);
 	~FieldGenerator() = default;
 
 	std::vector<cell_sptr> generateCells();

@@ -16,9 +16,13 @@ Renderer::Renderer(size_t w_width, size_t w_height, std::string title):
 	TextureManager::instance().addTexture("heal_item", "assets/textures/heal.png");
 	TextureManager::instance().addTexture("shield_item", "assets/textures/armor.png");
 	TextureManager::instance().addTexture("weapon_item", "assets/textures/knife.png");
+	TextureManager::instance().addTexture("coin_item", "assets/textures/coin.png");
 	TextureManager::instance().addTexture("enemy_regular", "assets/textures/enemy_regular.png");
 	TextureManager::instance().addTexture("enemy_daemon", "assets/textures/enemy_daemon.png");
 	TextureManager::instance().addTexture("enemy_gargoyle", "assets/textures/gargoyle.png");
+
+	size_t base_layers_cnt = 5;
+	this->render_objects.resize(base_layers_cnt);
 }
 
 Renderer::~Renderer()
@@ -33,15 +37,11 @@ bool Renderer::renderFrame()
 
 	this->getWindow().clear(sf::Color(255, 255, 255, 0));
 
-	/* render background objects first */
-	for (std::pair<size_t, sf::Sprite> object: this->render_objects_bg)
+	/* render all layers */
+	for (slayer& layer: this->render_objects)
 	{
-		this->getWindow().draw(object.second);
-	}
-	/* render foreground objects */
-	for (std::pair<size_t, sf::Sprite> object: this->render_objects_fg)
-	{
-		this->getWindow().draw(object.second);
+		for (std::pair<size_t, sf::Sprite> object: layer)
+			this->getWindow().draw(object.second);
 	}
 	
 	this->getWindow().display();
@@ -63,7 +63,7 @@ void Renderer::addObject(
 	const Drawable& object,
 	size_t object_w,
 	size_t object_h,
-	bool bg_object
+	size_t layer
 )
 {
 	const sf::Texture& texture = TextureManager::instance().get(object.getView().getTextureAlias());
@@ -82,10 +82,9 @@ void Renderer::addObject(
 	std::hash<const Drawable*> obj_hash;
 	size_t hash = obj_hash(&object);
 
-	if (bg_object)
-		render_objects_bg.insert_or_assign(hash, sprite);
-	else
-		render_objects_fg.insert_or_assign(hash, sprite);
+	if (this->render_objects.size() <= layer)
+		this->render_objects.resize(layer + 1);
+	this->render_objects.at(layer).insert_or_assign(hash, sprite);
 }
 
 bool Renderer::removeObject(const Drawable& object)
@@ -93,21 +92,19 @@ bool Renderer::removeObject(const Drawable& object)
 	std::hash<const Drawable*> obj_hash;
 	size_t hash = obj_hash(&object);
 
-	if (render_objects_bg.find(hash) != render_objects_bg.end())
+	for (slayer& layer: this->render_objects)
 	{
-		render_objects_bg.erase(hash);
-		return true;
-	}
-	if (render_objects_fg.find(hash) != render_objects_fg.end())
-	{
-		render_objects_fg.erase(hash);
-		return true;
+		if (layer.find(hash) != layer.end())
+		{
+			layer.erase(hash);
+			return true;
+		}
 	}
 	return false;
 }
 
 void Renderer::flushObjects()
 {
-	render_objects_bg.clear();
-	render_objects_fg.clear();
+	for (slayer& layer: this->render_objects)
+		layer.clear();
 }

@@ -36,7 +36,7 @@ public:
 	void setEnemy(std::shared_ptr<BaseEnemy> _enemy);
 
 	std::shared_ptr<BaseEnemy> getEnemy() const;
-	BaseItem& getItem() const;
+	std::shared_ptr<BaseItem> getItem() const;
 	const size_t getX() const;
 	const size_t getY() const;
 	bool   getHasWall() const;

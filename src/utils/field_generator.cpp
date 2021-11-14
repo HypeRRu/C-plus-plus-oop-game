@@ -1,18 +1,19 @@
 #include "../../inc/utils/field_generator.h"
 
-FieldGenerator::FieldGenerator(size_t width, size_t height, double wall_chance) : 
-	width{width}, height{height}, wall_chance{wall_chance}
+FieldGenerator::FieldGenerator(size_t width, size_t height) : 
+	width{width}, height{height}
 {
 	this->cells.reserve(this->height * this->width);
 }
-
 std::vector<cell_sptr> FieldGenerator::generateCells()
 {
-	std::srand(std::time(NULL));
 	bool has_wall;
-	int wall_offset = (int) (1 / this->wall_chance);
 	this->generateStartEnd();
 	std::shared_ptr<Cell> _cell_ptr;
+	RandomStuffGenerator generator(
+		GameConfig::instance().getWallsCount(),
+		(this->height - 2) * (this->width - 2) - 2
+	);
 
 	for (size_t y = 0; y < this->height; y++)
 	{
@@ -37,7 +38,7 @@ std::vector<cell_sptr> FieldGenerator::generateCells()
 				_cell_ptr = std::make_shared<EndCell>(x, y);
 			} else
 			{
-				has_wall = (std::rand() % wall_offset) == 0;
+				has_wall = generator.generateNew();
 				_cell_ptr = std::make_shared<Cell>(x, y, has_wall);
 			}
 			this->cells.insert(
