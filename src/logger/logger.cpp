@@ -8,7 +8,10 @@ Logger& Logger::instance()
 
 Logger::Logger(): log_all{false}
 {
-	this->log_streams["default"] = std::make_shared<ConsoleStream>();
+	if (GameConfig::instance().getLogEnabled() && 
+		GameConfig::instance().getConsoleLogEnabled()
+	)
+		this->log_streams["default"] = std::make_shared<ConsoleStream>();
 }
 
 void Logger::addStream(stream_ptr stream, const std::string& key)
@@ -61,6 +64,8 @@ void Logger::setLogAll(bool state)
 
 void Logger::write(const std::string& log)
 {
+	if (!GameConfig::instance().getLogEnabled())
+		return;
 	for (std::pair<std::string, stream_ptr> stream: this->log_streams)
 		stream.second->writeLog(log);
 }
@@ -167,6 +172,11 @@ bool Logger::handleAction(ActionPickItem& action)
 			item_type = "[WEAPON ITEM]";
 			item_effect = "damage changed to ";
 			characteristic = action.getEntity().getDamage();
+			break;
+		case ItemType::CoinItem:
+			item_type = "[COIN ITEM]";
+			item_effect = "coins count changed to ";
+			characteristic = action.getEntity().getMoneyPicked();
 			break;
 		default:
 			item_type = "[DEFAULT ITEM]";

@@ -32,7 +32,6 @@ bool BaseEnemy::canPickItem() const
 	return false;
 }
 
-#include <iostream>
 bool BaseEnemy::update()
 {
 	std::hash<BaseEnemy*> hash;

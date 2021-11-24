@@ -3,7 +3,7 @@
 FileStream::FileStream(const std::string& filepath):
 	stream{std::make_shared<std::ofstream>()}
 {
-	this->stream->open(filepath, std::ios::out);
+	this->stream->open(filepath, std::ios::app);
 	if (!this->isStreamOpen())
 		return;
 	*this->stream.get() << "\t\t[FILE LOG STARTED]\n";

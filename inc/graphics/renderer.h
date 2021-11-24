@@ -26,17 +26,19 @@ public:
 		const Drawable& object,
 		size_t object_w,
 		size_t object_h,
-		bool bg_object = true
+		size_t layer = 0
 	);
 
 	bool removeObject(const Drawable& object);
 	void flushObjects();
 private:
+	using slayer = std::map<size_t, sf::Sprite>;
+
 	sf::RenderWindow window;
 	size_t w_width, w_height;
 	std::string title;
-	std::map<size_t, sf::Sprite> render_objects_bg; /* background objects */
-	std::map<size_t, sf::Sprite> render_objects_fg; /* foreground objects */
+
+	std::vector<slayer> render_objects;
 };
 
 #endif

@@ -1,13 +1,14 @@
 #include "../../inc/items/base_item.h"
 #include "../../inc/actions/game_observer.h"
 
-BaseItem::BaseItem(size_t x, size_t y):
-	x{x}, y{y}, effect{0}
+BaseItem::BaseItem(size_t x, size_t y, int effect):
+	x{x}, y{y}, effect{effect}
 {}
 
 bool BaseItem::onAdd()
 {
-	ActionAddDrawable act(*this, false);
+	size_t draw_layer = 1;
+	ActionAddDrawable act(*this, draw_layer);
 	return this->getObserver().handleAction(act);
 }
 

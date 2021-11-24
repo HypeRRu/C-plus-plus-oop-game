@@ -74,15 +74,11 @@ Cell& Cell::operator =(Cell&& other)
 void Cell::setItem(std::shared_ptr<BaseItem> _item)
 {
 	this->item = _item;
-	if (_item)
-		this->item->onAdd();
 }
 
 void Cell::setEnemy(std::shared_ptr<BaseEnemy> _enemy)
 {
 	this->enemy = _enemy;
-	/*if (_enemy)
-		this->enemy->spawn();*/
 }
 
 const size_t Cell::getX() const
@@ -105,9 +101,9 @@ void Cell::toggleWall()
 	this->wall = !this->wall;
 }
 
-BaseItem& Cell::getItem() const
+std::shared_ptr<BaseItem> Cell::getItem() const
 {
-	return *this->item.get();
+	return this->item;
 }
 
 std::shared_ptr<BaseEnemy> Cell::getEnemy() const

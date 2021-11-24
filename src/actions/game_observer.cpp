@@ -1,6 +1,7 @@
 #include "../../inc/actions/game_observer.h"
 
-GameObserver::GameObserver(const Game& game_object)
+GameObserver::GameObserver(StateGameplay& game_object):
+	game_object{game_object}
 {
 	this->field = game_object.getFieldPtr();
 	this->renderer = game_object.getRendererPtr();
@@ -17,7 +18,6 @@ bool GameObserver::moveLogicForEnemy(ActionMove& action)
 		action.getCoords().second
 	).getEnemy().get() != nullptr)
 		return false;
-
 	if (this->player->getX() == action.getCoords().first &&
 		this->player->getY() == action.getCoords().second)
 	{
@@ -51,6 +51,9 @@ bool GameObserver::moveLogicForPlayer(ActionMove& action)
 		action.getCoords().first,
 		action.getCoords().second
 	);
+
+	this->game_object.increaseStepsCount();
+
 	if (target_cell.getEnemy().get())
 	{
 		ActionAttack act(
@@ -60,11 +63,11 @@ bool GameObserver::moveLogicForPlayer(ActionMove& action)
 		this->handleAction(act);
 		return false;
 	}
-	if (&target_cell.getItem())
+	if (target_cell.getItem().get())
 	{
 		ActionPickItem act(
 			action.getEntity(),
-			target_cell.getItem()
+			*target_cell.getItem().get()
 		);
 		this->handleAction(act);
 	}
@@ -98,7 +101,8 @@ bool GameObserver::handleAction(ActionMove& action)
 		action.getCoords().second
 	);
 
-	ActionAddDrawable actDraw(action.getEntity());
+	size_t draw_layer = 2;
+	ActionAddDrawable actDraw(action.getEntity(), draw_layer);
 	this->handleAction(actDraw);
 
 	if (!action.getIsEnemy() && this->field->getEnd() == action.getCoords())
@@ -147,6 +151,8 @@ bool GameObserver::handleAction(ActionDeleteEnemy& action)
 		action.getEnemy().getY()
 	).setEnemy(nullptr);
 
+	this->game_object.increaseEnemiesKilled();
+
 	Logger::instance().handleAction(action);
 	return true;
 }
@@ -168,7 +174,7 @@ bool GameObserver::handleAction(ActionAddDrawable& action)
 	this->renderer.get()->addObject(
 		action.getDrawable(),
 		60, 60,
-		action.getIsBackground()
+		action.getDrawLayer()
 	);
 	return true;
 }
@@ -176,5 +182,16 @@ bool GameObserver::handleAction(ActionAddDrawable& action)
 bool GameObserver::handleAction(ActionPlayerReachEnd& action)
 {
 	Logger::instance().handleAction(action);
+	if (this->game_object.isCompleted())
+	{
+		Logger::instance().write("Level completed!\n");
+		this->game_object.getGame().exit();
+		// std::cout << "Level completed!" << std::endl;
+	}
+	else
+	{
+		Logger::instance().write("Level not been completed yet!\n");
+		// std::cout << "Level not been completed yet!" << std::endl;
+	}	
 	return true;
 }

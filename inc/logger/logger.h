@@ -1,6 +1,7 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+#include "../game_config.h"
 #include "../interfaces/imanager.h"
 #include "../interfaces/ilogstream.h"
 

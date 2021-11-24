@@ -18,7 +18,7 @@ class BaseItem:
 	public BaseObserved
 {
 public:
-	BaseItem(size_t x, size_t y);
+	BaseItem(size_t x, size_t y, int effect = 0);
 	virtual ~BaseItem() = default;
 
 	virtual bool onPickUp(BaseEntity& entity) = 0;
