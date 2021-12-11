@@ -106,48 +106,119 @@ size_t Field::getWidth() const
 	return this->width;
 }
 
-CellsIterator& Field::createIterator()
-{
-	std::shared_ptr<CellsIterator> iter = 
-		std::make_shared<CellsIterator>(
-			width,
-			height,
-			this->cells
-		);
-	return *iter.get();
-}
-
 void Field::setStart(const std::pair<size_t, size_t>& start)
 {
-	this->start.first  = start.first;
-	this->start.second = start.second;
+	this->start_cell.first  = start.first;
+	this->start_cell.second = start.second;
 }
 
 void Field::setEnd(const std::pair<size_t, size_t>& end)
 {
-	this->end.first  = end.first;
-	this->end.second = end.second;
+	this->end_cell.first  = end.first;
+	this->end_cell.second = end.second;
 }
 
 
 void Field::setStart(size_t x, size_t y)
 {
-	this->start.first  = x;
-	this->start.second = y;
+	this->start_cell.first  = x;
+	this->start_cell.second = y;
 }
 
 void Field::setEnd(size_t x, size_t y)
 {
-	this->end.first  = x;
-	this->end.second = y;
+	this->end_cell.first  = x;
+	this->end_cell.second = y;
 }
 
 const std::pair<size_t, size_t>& Field::getStart() const
 {
-	return this->start;
+	return this->start_cell;
 }
 
 const std::pair<size_t, size_t>& Field::getEnd() const
 {
-	return this->end;
+	return this->end_cell;
+}
+
+Field::iterator::iterator(
+	Field& _field,
+	std::pair<size_t, size_t> cursor_position
+): field{_field}
+{
+	this->cursor_x = cursor_position.first;
+	this->cursor_y = cursor_position.second;
+}
+
+Field::iterator& Field::iterator::operator ++()
+{
+	if (!(this->cursor_y == this->field.getHeight()))
+		this->cursor_x++;
+	if (this->cursor_x == this->field.getWidth())
+	{
+		this->cursor_x = 0;
+		this->cursor_y++;
+	}
+	return *this;
+}
+
+Field::iterator Field::iterator::operator ++(int)
+{
+	Field::iterator oldValue = *this;
+	
+	if (!(this->cursor_y == this->field.getHeight()))
+		this->cursor_x++;
+	if (this->cursor_x == this->field.getWidth())
+	{
+		this->cursor_x = 0;
+		this->cursor_y++;
+	}
+
+	return oldValue;
+}
+
+bool Field::iterator::operator ==(const iterator& other) const
+{
+	return this->cursor_x == other.cursor_x && 
+		this->cursor_y == other.cursor_y;
+}
+
+bool Field::iterator::operator !=(const iterator& other) const
+{
+	return !(this->cursor_x == other.cursor_x && 
+		this->cursor_y == other.cursor_y);
+}
+
+Cell& Field::iterator::operator *() const
+{
+	return this->field.getCell(this->cursor_x, this->cursor_y);
+}
+
+Cell* Field::iterator::operator ->() const
+{
+	return &this->field.getCell(this->cursor_x, this->cursor_y);
+}
+
+Field::iterator Field::begin()
+{
+	return Field::iterator(*this);
+}
+
+Field::iterator Field::end()
+{
+	return Field::iterator(*this, {0, this->height});
+}
+
+std::string Field::getCurrentState() const
+{
+	std::stringstream buffer;
+	buffer << "field_size=(" << this->width << "; " << this->height << ")" << std::endl;
+	for (size_t y = 0; y < this->height; ++y)
+	{
+		for (size_t x = 0; x < this->width; ++x)
+		{
+			buffer << this->getCell(x, y).getCurrentState();
+		}
+	}
+	return buffer.str();
 }

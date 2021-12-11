@@ -8,6 +8,7 @@
 #include <map>
 
 #include "texture_manager.h"
+#include "base_window.h"
 #include "../actions/base_observed.h"
 #include "../interfaces/drawable.h"
 
@@ -28,6 +29,10 @@ public:
 		size_t object_h,
 		size_t layer = 0
 	);
+	void setWindowRendering(
+		std::shared_ptr<BaseWindow> _window_rendering
+	);
+	void removeWindowRendering();
 
 	bool removeObject(const Drawable& object);
 	void flushObjects();
@@ -39,6 +44,8 @@ private:
 	std::string title;
 
 	std::vector<slayer> render_objects;
+	std::weak_ptr<BaseWindow> window_rendering;
+	bool is_rendering_window;
 };
 
 #endif

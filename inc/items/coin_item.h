@@ -12,6 +12,7 @@ public:
 		size_t y,
 		size_t amount = 1
 	);
+	~CoinItem() = default;
 
 	bool onPickUp(BaseEntity& entity);
 	const int getEffect() const;

@@ -1,32 +1,22 @@
 #include "../inc/game_config.h"
 
+#include <iostream>
 GameConfig::GameConfig() /* game configuration by default */
 {
-	this->field_width = 20;
-	this->field_height = 15;
-	this->enemies_count = 5;
-	this->items_count = 8;
-	this->walls_count = 20;
-	this->enemies_walk = 3;
-
-	this->controls = std::map<sf::Keyboard::Key, Event>({
-		{sf::Keyboard::Up, Event::EventMoveUp},
-		{sf::Keyboard::Right, Event::EventMoveRight},
-		{sf::Keyboard::Down, Event::EventMoveDown},
-		{sf::Keyboard::Left, Event::EventMoveLeft},
-		{sf::Keyboard::Escape, Event::EventGoBack}
-	});
-
-	this->log_enabled = true;
-	this->log_file = "";
-	this->log_all = true;
-	this->console_log_enabled = false;
+	this->loader = std::make_shared<ConfigLoader>();
+	this->loader->setPath("assets/config.txt");
+	this->loader->load(*this);
 }
 
 GameConfig& GameConfig::instance()
 {
 	static GameConfig config;
 	return config;
+}
+
+void GameConfig::save()
+{
+	this->loader->save();
 }
 
 bool GameConfig::changeConfiguration(const Configuration& configuration)
@@ -104,3 +94,44 @@ void GameConfig::setEnemiesWalk(int steps)
 {
 	this->enemies_walk = steps;
 }
+
+void GameConfig::setFieldWidth(int width)
+{
+	this->field_width = width;
+}
+
+void GameConfig::setFieldHeight(int height)
+{
+	this->field_height = height;
+}
+
+void GameConfig::setWallsCount(int count)
+{
+	this->walls_count = count;
+}
+
+void GameConfig::setControls(std::map<sf::Keyboard::Key, Event> controls)
+{
+	this->controls = controls;
+}
+
+void GameConfig::setLogEnabled(bool enabled)
+{
+	this->log_enabled = enabled;
+}
+
+void GameConfig::setLogFile(const std::string& filepath)
+{
+	this->log_file = filepath;
+}
+
+void GameConfig::setLogAll(bool state)
+{
+	this->log_all = state;
+}
+
+void GameConfig::setConsoleLogEnabled(bool state)
+{
+	this->console_log_enabled = state;
+}
+

@@ -12,6 +12,7 @@ public:
 		size_t y,
 		size_t shield_increase = 50
 	);
+	~ShieldItem() = default;
 
 	bool onPickUp(BaseEntity& entity);
 	const int getEffect() const;

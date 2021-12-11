@@ -7,6 +7,12 @@ Cell::Cell(size_t x, size_t y, bool wall) : x{x}, y{y}, wall{wall}
 	this->setView(std::make_shared<CellView>(x, y, wall));
 }
 
+Cell::~Cell()
+{
+	this->item.reset();
+	this->enemy.reset();
+}
+
 CellType Cell::getType()
 {
 	return CellType::RegularCell;
@@ -71,14 +77,21 @@ Cell& Cell::operator =(Cell&& other)
 	return *this;
 }
 
+#include <iostream>
 void Cell::setItem(std::shared_ptr<BaseItem> _item)
 {
-	this->item = _item;
+	if (!_item.get())
+		this->item.reset();
+	else
+		this->item = _item;
 }
 
 void Cell::setEnemy(std::shared_ptr<BaseEnemy> _enemy)
 {
-	this->enemy = _enemy;
+	if(!_enemy.get())
+		this->enemy.reset();
+	else
+		this->enemy = _enemy;
 }
 
 const size_t Cell::getX() const
@@ -101,12 +114,12 @@ void Cell::toggleWall()
 	this->wall = !this->wall;
 }
 
-std::shared_ptr<BaseItem> Cell::getItem() const
+std::weak_ptr<BaseItem> Cell::getItem() const
 {
 	return this->item;
 }
 
-std::shared_ptr<BaseEnemy> Cell::getEnemy() const
+std::weak_ptr<BaseEnemy> Cell::getEnemy() const
 {
 	return this->enemy;
 }
@@ -114,4 +127,24 @@ std::shared_ptr<BaseEnemy> Cell::getEnemy() const
 std::unique_ptr<Cell> Cell::createUniquePtr()
 {
 	return std::make_unique<Cell>(*this);
+}
+
+std::string Cell::getCurrentState(
+	const std::string& line_offset, 
+	const std::string& cell_type
+) const
+{
+	std::stringstream buffer;
+	std::string content_offset = line_offset + "\t";
+	buffer << line_offset << "[" << std::endl;
+	buffer << content_offset << "type=" << cell_type << std::endl;
+	buffer << content_offset << "position=(" << this->x << "; " << this->y << ")" << std::endl;
+	buffer << content_offset << "wall=" << this->getHasWall() << std::endl;
+	if (this->enemy.get())
+	{
+		buffer << content_offset << "entity=" << std::endl;
+	}
+	buffer << line_offset << "]" << std::endl;
+
+	return buffer.str();
 }

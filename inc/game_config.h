@@ -3,9 +3,11 @@
 
 #include <string>
 #include <map>
+#include <memory>
 
 #include "interfaces/configuration.h"
 #include <SFML/Graphics.hpp>
+#include "configurations/config_loader.h"
 
 enum class Event
 {
@@ -14,13 +16,17 @@ enum class Event
 	EventMoveDown,
 	EventMoveLeft,
 	EventGoBack,
-	EventGameClosed
+	EventGameClosed,
+	EventConfirmation
 };
+
+class ConfigLoader;
 
 class GameConfig
 {
 public:
 	static GameConfig& instance();
+	void save();
 
 	GameConfig(const GameConfig&) = delete;
 	GameConfig& operator =(const GameConfig&) = delete;
@@ -40,11 +46,22 @@ public:
 	bool getLogAll() const;
 	bool getConsoleLogEnabled() const;
 
+	void setFieldWidth(int width);
+	void setFieldHeight(int height);
+	void setWallsCount(int count);
+	void setControls(std::map<sf::Keyboard::Key, Event> controls);
+	void setLogEnabled(bool enabled);
+	void setLogFile(const std::string& filepath);
+	void setLogAll(bool state);
+	void setConsoleLogEnabled(bool state);
+
 	void setEnemiesCount(int count);
 	void setItemsCount(int count);
 	void setEnemiesWalk(int steps);
 protected:
 	GameConfig();
+
+	std::shared_ptr<ConfigLoader> loader;
 	/* rules */
 	int field_width;
 	int field_height;

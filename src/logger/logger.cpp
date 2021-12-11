@@ -218,3 +218,20 @@ bool Logger::handleAction(ActionPlayerReachEnd& action)
 	this->write(buffer.str());
 	return true;
 }
+
+bool Logger::handleAction(ActionPlayerDied& action)
+{
+	if (
+		!this->log_all && 
+		!this->checkSubcriber(action.getPlayer())
+	)
+		return false;
+
+	std::stringstream buffer;
+	buffer << action.getPlayer()
+		<< " died! Game over!"
+		<< std::endl;
+
+	this->write(buffer.str());
+	return true;
+}

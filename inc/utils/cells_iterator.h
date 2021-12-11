@@ -2,11 +2,11 @@
 #define CELLS_ITERATOR_H
 
 #include "../cells/cell.h"
+#include "../field.h"
 #include "../interfaces/iterator.h"
 #include <memory>
 
-using cell_ptr = std::unique_ptr<Cell>;
-using cell_row = std::unique_ptr<cell_ptr[]>;
+class Field;
 
 class CellsIterator : public Iterator<Cell>
 {
@@ -14,7 +14,7 @@ public:
 	CellsIterator(
 		size_t object_w,
 		size_t object_h,
-		std::unique_ptr<cell_row[]>& iterable
+		Field& _field
 	);
 	void first();
 	void next();
@@ -27,7 +27,7 @@ private:
 	size_t object_w;
 	size_t object_h;
 
-	std::unique_ptr<cell_row[]>& cells;
+	Field& field;
 };
 
 #endif

@@ -12,6 +12,7 @@ public:
 		size_t y,
 		size_t healing_amount = 50
 	);
+	~HealItem() = default;
 
 	bool onPickUp(BaseEntity& entity);
 	const int getEffect() const;

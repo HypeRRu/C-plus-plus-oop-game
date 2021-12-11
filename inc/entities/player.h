@@ -3,6 +3,7 @@
 
 #include "base_entity.h"
 #include "../views/player_view.h"
+#include "../actions/action_player_died.h"
 
 class Player: 
 	public BaseEntity
@@ -12,6 +13,9 @@ public:
 	~Player() = default;
 
 	bool canPickItem() const;
+	void changeHealth(int delta);
+
+	void death();
 };
 
 #endif

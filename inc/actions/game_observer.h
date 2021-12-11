@@ -10,6 +10,7 @@
 #include "action_pick_item.h"
 #include "action_delete_item.h"
 #include "action_delete_enemy.h"
+#include "action_player_died.h"
 #include "action_add_drawable.h"
 #include "action_player_reach_end.h"
 #include "../logger/logger.h"
@@ -32,6 +33,7 @@ public:
 	bool handleAction(ActionDeleteEnemy& action);
 	bool handleAction(ActionAddDrawable& action);
 	bool handleAction(ActionPlayerReachEnd& action);
+	bool handleAction(ActionPlayerDied& action);
 protected:
 	bool moveLogicForPlayer(ActionMove& action);
 	bool moveLogicForEnemy(ActionMove& action);

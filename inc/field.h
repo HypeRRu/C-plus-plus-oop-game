@@ -3,13 +3,15 @@
 
 #include <memory>
 #include <stdexcept>
+#include <sstream>
+#include <string>
 
 #include "cells/cell.h"
 #include "cells/start_cell.h"
 #include "cells/end_cell.h"
-#include "utils/cells_iterator.h"
 #include "actions/base_observed.h"
 #include "actions/action_add_drawable.h"
+
 
 class Field: public BaseObserved
 {
@@ -30,8 +32,6 @@ public:
 	size_t getHeight() const;
 	Cell&  getCell(size_t x, size_t y) const;
 
-	CellsIterator& createIterator();
-
 	void setStart(const std::pair<size_t, size_t>& start);
 	void setEnd(const std::pair<size_t, size_t>& end);
 	void setStart(size_t x, size_t y);	
@@ -39,6 +39,30 @@ public:
 
 	const std::pair<size_t, size_t>& getStart() const;
 	const std::pair<size_t, size_t>& getEnd() const;
+
+	// save field state
+	std::string getCurrentState() const;
+
+	class iterator
+	{
+	public:
+		iterator(
+			Field& _field, 
+			std::pair<size_t, size_t> cursor_position = {0, 0}
+		);
+		iterator& operator ++();
+		iterator operator ++(int);
+		bool operator ==(const iterator& other) const;
+		bool operator !=(const iterator& other) const;
+		Cell& operator *() const;
+		Cell* operator ->() const;
+	protected:
+		Field& field;
+		size_t cursor_x;
+		size_t cursor_y;
+	};
+	iterator begin();
+	iterator end();
 private:
 	using cell_ptr = std::unique_ptr<Cell>;
 	using cell_row = std::unique_ptr<cell_ptr[]>;
@@ -47,8 +71,8 @@ private:
 	size_t height;
 	std::unique_ptr<cell_row[]> cells;
 
-	std::pair<size_t, size_t> start;
-	std::pair<size_t, size_t> end;
+	std::pair<size_t, size_t> start_cell;
+	std::pair<size_t, size_t> end_cell;
 };
 
 #endif

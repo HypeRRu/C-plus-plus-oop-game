@@ -5,12 +5,14 @@
 #include <functional>
 #include <set>
 #include <cmath>
+#include <sstream>
+#include <string>
 
 #include "base_state.h"
 #include "../game.h"
 #include "../game_config.h"
 #include "gameplay_event_handler.h"
-// #include "movement_handler.h"
+#include "state_pause.h"
 
 #include "../interfaces/game_rule.h"
 #include "../interfaces/ichecker.h"
@@ -41,6 +43,7 @@ class GameObserver;
 class Renderer;
 class Game;
 class GameRule;
+class StatePause;
 
 class StateGameplay: public BaseState
 {
@@ -49,12 +52,15 @@ public:
 		Game& game,
 		std::shared_ptr<Renderer> _renderer
 	);
-	~StateGameplay() = default;
+	~StateGameplay();
+
+	void showing() const;
 
 	bool update(int time_passed = 0);
 	bool pause(bool pause_state = true);
 	bool generateLevel();
 	bool loadLevel(); /* will be added soon */
+	std::string getSave() const;
 
 	bool isCompleted();
 	bool isPaused() const;

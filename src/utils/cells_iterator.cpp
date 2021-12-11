@@ -3,12 +3,12 @@
 CellsIterator::CellsIterator(
 	size_t object_w,
 	size_t object_h,
-	std::unique_ptr<cell_row[]>& iterable
+	Field& _field
 ) : cursor_x{0}, 
 	cursor_y{0},
 	object_w{object_w},
 	object_h{object_h},
-	cells{iterable}
+	field{_field}
 {}
 
 void CellsIterator::first()
@@ -35,5 +35,6 @@ bool CellsIterator::isDone() const
 
 Cell& CellsIterator::currentItem() const
 {
-	return *this->cells[cursor_y][cursor_x].get();
+	return this->field.getCell(cursor_x, cursor_y);
+	// return *this->cells[cursor_y][cursor_x].get();
 }

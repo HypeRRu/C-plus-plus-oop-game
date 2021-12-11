@@ -14,3 +14,11 @@ std::unique_ptr<Cell> EndCell::createUniquePtr()
 {
 	return std::make_unique<EndCell>(*this);
 }
+
+std::string EndCell::getCurrentState(
+	const std::string& line_offset, 
+	const std::string& cell_type
+) const
+{
+	return Cell::getCurrentState(line_offset, "EndCell");
+}
