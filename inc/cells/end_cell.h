@@ -4,6 +4,8 @@
 #include "cell.h"
 #include "../views/end_cell_view.h"
 
+class CellSaver;
+
 class EndCell: public Cell
 {
 public:
@@ -12,10 +14,7 @@ public:
 
 	CellType getType();
 
-	std::string getCurrentState(
-		const std::string& line_offset = "",
-		const std::string& cell_type = ""
-	) const;
+	std::shared_ptr<CellSaver> createSaver() const;
 
 	std::unique_ptr<Cell> createUniquePtr();
 };

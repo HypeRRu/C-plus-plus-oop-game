@@ -5,6 +5,8 @@
 #include "../views/player_view.h"
 #include "../actions/action_player_died.h"
 
+class PlayerSaver;
+
 class Player: 
 	public BaseEntity
 {
@@ -16,6 +18,8 @@ public:
 	void changeHealth(int delta);
 
 	void death();
+
+	std::shared_ptr<PlayerSaver> createSaver() const;
 };
 
 #endif

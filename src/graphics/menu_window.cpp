@@ -14,6 +14,13 @@ MenuWindow::MenuWindow(StateMenu& state):
 		"start"
 	);
 	this->addButton(
+		"Load",
+		[&](BaseWindow& window)->void {
+			this->state.loadGame();
+		},
+		"load"
+	);
+	this->addButton(
 		"Exit",
 		[&](BaseWindow& window)->void {
 			this->state.exit();

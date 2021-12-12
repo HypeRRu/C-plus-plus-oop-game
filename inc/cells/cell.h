@@ -3,11 +3,11 @@
 
 #include <memory>
 #include <vector>
-#include <sstream>
 #include <string>
 
 #include "../views/cell_view.h"
 #include "../views/base_drawable.h"
+#include "../actions/base_observed.h"
 
 enum class CellType {
 	RegularCell,
@@ -17,8 +17,9 @@ enum class CellType {
 
 class BaseItem;
 class BaseEnemy;
+class CellSaver;
 
-class Cell: public BaseDrawable
+class Cell: public BaseDrawable, public BaseObserved
 {
 public:
 	Cell(size_t x, size_t y, bool wall = false);
@@ -43,10 +44,7 @@ public:
 	bool   getHasWall() const;
 
 	void toggleWall();
-	virtual std::string getCurrentState(
-		const std::string& line_offset = "",
-		const std::string& cell_type = "Cell"
-	) const;
+	virtual std::shared_ptr<CellSaver> createSaver() const;
 
 	virtual std::unique_ptr<Cell> createUniquePtr();
 protected:

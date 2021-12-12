@@ -4,6 +4,8 @@
 #include "../items/base_item.h"
 #include "../views/shield_item_view.h"
 
+class ItemSaver;
+
 class ShieldItem: public BaseItem
 {
 public:
@@ -19,6 +21,8 @@ public:
 
 	ItemType getItemType() const;
 	std::shared_ptr<BaseItem> getSharedPtr();
+
+	std::shared_ptr<ItemSaver> createSaver() const;
 };
 
 #endif

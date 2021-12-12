@@ -22,3 +22,10 @@ std::ostream& operator <<(std::ostream& stream, const std::pair<size_t, size_t>&
 	stream << "(" << object.first << "; " << object.second << ")";
 	return stream;
 }
+
+std::istream& operator >>(std::istream& stream, std::pair<size_t, size_t>& object)
+{
+	char s;
+	stream >> s >> object.first >> s >> object.second >> s;
+	return stream;
+}

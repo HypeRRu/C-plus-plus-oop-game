@@ -1,10 +1,10 @@
 #include "../../inc/states/state_gameplay.h"
+#include "../../inc/saves/gameplay_saver.h"
 
 StateGameplay::StateGameplay(
 	Game& game,
 	std::shared_ptr<Renderer> _renderer
-): 
-	game_object{std::ref(game)}, renderer{_renderer}, is_paused{false}
+): game_object{std::ref(game)}, renderer{_renderer}, is_paused{false}
 {
 	GameConfig& config = GameConfig::instance();
 
@@ -12,7 +12,7 @@ StateGameplay::StateGameplay(
 		config.getFieldSize().first,
 		config.getFieldSize().second
 	);
-	this->generateLevel(); /* or load it */
+	this->generateLevel();
 	this->configureObserver();
 	this->setEventHandler(
 		std::make_shared<GameplayEventHandler>(*this)
@@ -23,18 +23,65 @@ StateGameplay::StateGameplay(
 
 	this->enemies_killed = 0;
 	this->steps_count = 0;
-	this->money_picked = 0;
 
-	this->checker = std::make_shared<RuleChecker<
-		EnemiesToKillRule<4>, 
-		MaxStepsRule<100>,
-		MoneyRule<1>
-	>>();
+	this->initRules();
+}
+
+StateGameplay::StateGameplay(
+	Game& game,
+	std::shared_ptr<Renderer> _renderer,
+	std::shared_ptr<Field> _field,
+	std::shared_ptr<Player> _player,
+	int _enemies_killed,
+	int _steps_count
+): game_object{std::ref(game)}, renderer{_renderer}, is_paused{false}
+{
+	this->field = _field;
+	this->player = _player;
+	this->configureObserver();
+	this->setEventHandler(
+		std::make_shared<GameplayEventHandler>(*this)
+	);
+	this->is_running = false;
+	this->time_to_update = 0;
+	this->steps_to_update = 0;
+
+	this->enemies_killed = _enemies_killed;
+	this->steps_count = _steps_count;
+
+	this->initRules();
 }
 
 StateGameplay::~StateGameplay()
 {
 	this->renderer->flushObjects();
+}
+
+void StateGameplay::initDraw() const
+{
+	Field::iterator iterator = this->field->begin();
+	while (iterator != this->field->end())
+	{
+		auto enemy = (*iterator).getEnemy().lock();
+		auto item = (*iterator).getItem().lock();
+		if (enemy.get())
+			enemy->spawn();
+		if (item.get())
+			item->onAdd();
+		++iterator;
+	}
+
+	this->field->onCellsAdded();
+	this->player->spawn();
+}
+
+void StateGameplay::initRules()
+{
+	this->checker = std::make_shared<RuleChecker<
+		EnemiesToKillRule<4>, 
+		MaxStepsRule<100>,
+		MoneyRule<1>
+	>>();
 }
 
 bool StateGameplay::generateLevel()
@@ -91,14 +138,10 @@ bool StateGameplay::generateLevel()
 	return true;
 }
 
-bool StateGameplay::loadLevel()
-{
-	return this->generateLevel();
-}
-
 std::string StateGameplay::getSave() const
 {
-	return this->field->getCurrentState();
+	std::shared_ptr<GameplaySaver> saver = this->createSaver();
+	return saver->save();
 }
 
 bool StateGameplay::update(int time_passed)
@@ -138,6 +181,7 @@ bool StateGameplay::update(int time_passed)
 void StateGameplay::showing() const
 {
 	this->renderer->removeWindowRendering();
+	this->initDraw();
 }
 
 void StateGameplay::configureObserver()
@@ -153,20 +197,11 @@ void StateGameplay::configureObserver()
 		auto enemy = (*iterator).getEnemy().lock();
 		auto item = (*iterator).getItem().lock();
 		if (enemy.get())
-		{
 			enemy->setObserver(this->observer);
-			enemy->spawn();
-		}
 		if (item.get())
-		{
 			item->setObserver(this->observer);
-			item->onAdd();
-		}
 		++iterator;
 	}
-
-	this->field->onCellsAdded();
-	this->player->spawn();
 }
 
 bool StateGameplay::pause(bool pause_state)
@@ -235,12 +270,12 @@ void StateGameplay::increaseStepsCount()
 	++this->steps_count;
 }
 
-int StateGameplay::getMoneyPicked() const
+std::shared_ptr<GameplaySaver> StateGameplay::createSaver() const
 {
-	return this->money_picked;
-}
-
-void StateGameplay::increaseMoneyPicked()
-{
-	++this->money_picked;
+	return std::make_shared<GameplaySaver>(
+		this->player,
+		this->field,
+		this->enemies_killed,
+		this->steps_count
+	);
 }

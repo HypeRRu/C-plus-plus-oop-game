@@ -1,4 +1,5 @@
 #include "../../inc/items/weapon_item.h"
+#include "../../inc/saves/item_saver.h"
 
 WeaponItem::WeaponItem(
 	size_t x,
@@ -30,4 +31,13 @@ ItemType WeaponItem::getItemType() const
 std::shared_ptr<BaseItem> WeaponItem::getSharedPtr()
 {
 	return std::make_shared<WeaponItem>(*this);
+}
+
+std::shared_ptr<ItemSaver> WeaponItem::createSaver() const
+{
+	return std::make_shared<ItemSaver>(
+		std::pair<size_t, size_t>{this->x, this->y},
+		this->effect,
+		"WeaponItem"
+	);
 }

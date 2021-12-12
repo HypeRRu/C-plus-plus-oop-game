@@ -45,10 +45,20 @@ bool StateMenu::update(int time_passed)
 void StateMenu::start() const
 {
 	auto state_gameplay = std::make_unique<StateGameplay>(
-		this->getGame(), this->renderer
+		this->getGame(), 
+		this->renderer
 	);
 	this->getGame().newState(std::move(state_gameplay));
 	this->renderer->removeWindowRendering();
+}
+
+void StateMenu::loadGame() const
+{
+	auto state_load = std::make_unique<StateLoad>(
+		this->getGame(), 
+		this->renderer
+	);
+	this->getGame().newState(std::move(state_load));
 }
 
 void StateMenu::exit() const

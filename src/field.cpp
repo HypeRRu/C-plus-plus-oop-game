@@ -209,16 +209,11 @@ Field::iterator Field::end()
 	return Field::iterator(*this, {0, this->height});
 }
 
-std::string Field::getCurrentState() const
+std::shared_ptr<FieldSaver> Field::createSaver() const
 {
-	std::stringstream buffer;
-	buffer << "field_size=(" << this->width << "; " << this->height << ")" << std::endl;
-	for (size_t y = 0; y < this->height; ++y)
-	{
-		for (size_t x = 0; x < this->width; ++x)
-		{
-			buffer << this->getCell(x, y).getCurrentState();
-		}
-	}
-	return buffer.str();
+	return std::make_shared<FieldSaver>(
+		this->width,
+		this->height,
+		*this
+	);
 }

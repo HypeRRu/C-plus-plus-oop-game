@@ -90,3 +90,21 @@ bool Game::popState()
 	this->states.back()->showing();
 	return true;
 }
+
+bool Game::toMenu()
+{
+	while (this->states.size() > 1)
+	{
+		this->states.pop_back();
+	}
+	if (!this->states.size())
+	{
+		this->exit();
+		return false;
+	}
+	this->manager->setEventHandler(
+		this->states.back()->getEventHandler()
+	);
+	this->states.back()->showing();
+	return true;
+}

@@ -28,6 +28,8 @@ public:
 	bool exit();
 	bool newState(std::unique_ptr<BaseState> state);
 	bool popState();
+
+	bool toMenu();
 protected:
 	bool running;
 

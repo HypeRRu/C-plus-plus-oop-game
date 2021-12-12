@@ -21,6 +21,13 @@ PauseWindow::PauseWindow(StatePause& state):
 		"save"
 	);
 	this->addButton(
+		"Load",
+		[&](BaseWindow& window)->void {
+			this->state.loadGame();
+		},
+		"load"
+	);
+	this->addButton(
 		"To Main Menu",
 		[&](BaseWindow& window)->void {
 			this->state.toMenu();

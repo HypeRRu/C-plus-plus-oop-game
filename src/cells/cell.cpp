@@ -1,6 +1,7 @@
 #include "../../inc/cells/cell.h"
 #include "../../inc/items/base_item.h"
 #include "../../inc/entities/base_enemy.h"
+#include "../../inc/saves/cell_saver.h"
 
 Cell::Cell(size_t x, size_t y, bool wall) : x{x}, y{y}, wall{wall}
 {
@@ -77,7 +78,6 @@ Cell& Cell::operator =(Cell&& other)
 	return *this;
 }
 
-#include <iostream>
 void Cell::setItem(std::shared_ptr<BaseItem> _item)
 {
 	if (!_item.get())
@@ -129,22 +129,13 @@ std::unique_ptr<Cell> Cell::createUniquePtr()
 	return std::make_unique<Cell>(*this);
 }
 
-std::string Cell::getCurrentState(
-	const std::string& line_offset, 
-	const std::string& cell_type
-) const
+std::shared_ptr<CellSaver> Cell::createSaver() const
 {
-	std::stringstream buffer;
-	std::string content_offset = line_offset + "\t";
-	buffer << line_offset << "[" << std::endl;
-	buffer << content_offset << "type=" << cell_type << std::endl;
-	buffer << content_offset << "position=(" << this->x << "; " << this->y << ")" << std::endl;
-	buffer << content_offset << "wall=" << this->getHasWall() << std::endl;
-	if (this->enemy.get())
-	{
-		buffer << content_offset << "entity=" << std::endl;
-	}
-	buffer << line_offset << "]" << std::endl;
-
-	return buffer.str();
+	return std::make_shared<CellSaver>(
+		std::pair<size_t, size_t>{this->x, this->y},
+		this->wall,
+		this->getEnemy(),
+		this->getItem(),
+		"Cell"
+	);
 }

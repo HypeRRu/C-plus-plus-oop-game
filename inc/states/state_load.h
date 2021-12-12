@@ -1,39 +1,36 @@
-#ifndef STATE_PAUSE_H
-#define STATE_PAUSE_H
+#ifndef STATE_LOAD_H
+#define STATE_LOAD_H
 
 #include <memory>
 #include <functional>
+#include <string>
+#include <fstream>
 
 #include "base_state.h"
 #include "../game.h"
 #include "../game_config.h"
-#include "pause_event_handler.h"
+#include "load_event_handler.h"
 #include "state_gameplay.h"
-#include "state_save.h"
-#include "state_load.h"
 
 #include "graphics/renderer.h"
 #include "graphics/base_window.h"
-#include "graphics/pause_window.h"
+#include "graphics/load_window.h"
 
 class Game;
 class Renderer;
-class PauseWindow;
+class LoadWindow;
 class StateGameplay;
-class StateLoad;
 
-class StatePause: public BaseState
+class StateLoad: public BaseState
 {
 public:
-	StatePause(
+	StateLoad(
 		Game& game,
-		std::shared_ptr<Renderer> _renderer,
-		StateGameplay& _gameplay
+		std::shared_ptr<Renderer> _renderer
 	);
-	~StatePause();
+	~StateLoad();
 
 	Game& getGame() const;
-	StateGameplay& getGameplay() const;
 	std::shared_ptr<Renderer> getRendererPtr() const;
 	std::shared_ptr<BaseWindow> getWindow() const;
 
@@ -41,13 +38,9 @@ public:
 
 	bool update(int time_passed = 0);
 
-	void play() const;
-	void saveGame() const;
-	void loadGame() const;
-	void toMenu() const;
-	void exit() const;
+	void loadFromSlot(int slot_number = 1) const;
+	void back() const;
 protected:
-	std::reference_wrapper<StateGameplay> gameplay;
 	std::reference_wrapper<Game> game_object;
 	std::shared_ptr<Renderer> renderer;
 	std::shared_ptr<BaseWindow> window;

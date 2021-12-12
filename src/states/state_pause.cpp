@@ -60,6 +60,15 @@ void StatePause::saveGame() const
 	this->getGame().newState(std::move(state_save));
 }
 
+void StatePause::loadGame() const
+{
+	auto state_load = std::make_unique<StateLoad>(
+		this->getGame(), 
+		this->renderer
+	);
+	this->getGame().newState(std::move(state_load));
+}
+
 void StatePause::play() const
 {
 	this->getGame().popState();

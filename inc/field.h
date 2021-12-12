@@ -12,6 +12,9 @@
 #include "actions/base_observed.h"
 #include "actions/action_add_drawable.h"
 
+#include "saves/field_saver.h"
+
+class FieldSaver;
 
 class Field: public BaseObserved
 {
@@ -22,7 +25,7 @@ public:
 	Field(const Field& other);
 	Field(Field&& other);
 
-	void setCell(size_t x, size_t y, Cell *cell);	
+	void setCell(size_t x, size_t y, Cell *cell);
 	bool onCellsAdded();
 
 	Field& operator =(const Field& other);
@@ -41,7 +44,7 @@ public:
 	const std::pair<size_t, size_t>& getEnd() const;
 
 	// save field state
-	std::string getCurrentState() const;
+	std::shared_ptr<FieldSaver> createSaver() const;
 
 	class iterator
 	{

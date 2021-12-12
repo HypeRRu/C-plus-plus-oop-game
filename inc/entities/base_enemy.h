@@ -10,6 +10,8 @@
 #include <functional>
 #include <memory>
 
+class EnemySaver;
+
 class BaseEnemy: public BaseEntity
 {
 public:
@@ -26,6 +28,8 @@ public:
 	bool canPickItem() const;
 
 	bool update();
+
+	virtual std::shared_ptr<EnemySaver> createSaver() const = 0;
 
 	virtual std::shared_ptr<BaseEnemy> getSharedPtr() = 0;
 };

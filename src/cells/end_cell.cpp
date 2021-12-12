@@ -1,4 +1,5 @@
 #include "../../inc/cells/end_cell.h"
+#include "../../inc/saves/cell_saver.h"
 
 EndCell::EndCell(size_t x, size_t y) : Cell{x, y, false}
 {
@@ -15,10 +16,13 @@ std::unique_ptr<Cell> EndCell::createUniquePtr()
 	return std::make_unique<EndCell>(*this);
 }
 
-std::string EndCell::getCurrentState(
-	const std::string& line_offset, 
-	const std::string& cell_type
-) const
+std::shared_ptr<CellSaver> EndCell::createSaver() const
 {
-	return Cell::getCurrentState(line_offset, "EndCell");
+	return std::make_shared<CellSaver>(
+		std::pair<size_t, size_t>{this->x, this->y},
+		this->wall,
+		this->getEnemy(),
+		this->getItem(),
+		"EndCell"
+	);
 }
