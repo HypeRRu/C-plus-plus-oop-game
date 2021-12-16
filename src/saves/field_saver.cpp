@@ -19,7 +19,8 @@ FieldSaver::FieldSaver(
 	this->offset = "";
 }
 
-FieldSaver::FieldSaver(std::istringstream& stream)
+FieldSaver::FieldSaver(std::istringstream& stream):
+	width{0}, height{0}
 {
 	this->offset = "";
 	// parse string
@@ -47,10 +48,32 @@ FieldSaver::FieldSaver(std::istringstream& stream)
 		}
 		else if (left_op == "cell")
 		{
-			this->cells.push_back(std::make_shared<CellSaver>(stream));
+			std::shared_ptr<CellSaver> sv = std::make_shared<CellSaver>(stream);
+			if (!sv.get())
+				throw GameLogicError{"Unable to create game field!"};
+			this->cells.push_back(sv);
 		}
 	}
+	this->checkParams();
 }
+
+void FieldSaver::checkParams() const
+{
+	std::string missing_params = "";
+	if (!this->width)
+		missing_params += "field_width\n";
+	if (!this->height)
+		missing_params += "field_height\n";
+	if (missing_params == "")
+	{
+		if (this->cells.size() < this->width * this->height)
+			missing_params += "cells x" + std::to_string(
+				this->width * this->height - this->cells.size()
+			);
+	}
+	if (missing_params != "")
+		throw ParseError{"Field", missing_params};
+}	
 
 std::string FieldSaver::save() const
 {
@@ -79,9 +102,18 @@ std::shared_ptr<Field> FieldSaver::load() const
 		this->width,
 		this->height
 	);
+	if (!field.get())
+		throw GameLogicError{"Unable to create game field!"};
 	for (auto& cell: this->cells)
 	{
 		std::shared_ptr<Cell> cell_object = cell->load();
+		if (
+			&(field->getCell(
+				cell_object->getX(),
+				cell_object->getY()
+			)) != nullptr
+		)
+			throw GameLogicError{"Unable to create game field!"};
 		field->setCell(
 			cell_object->getX(),
 			cell_object->getY(),

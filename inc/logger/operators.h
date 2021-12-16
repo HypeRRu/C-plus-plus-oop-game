@@ -2,6 +2,7 @@
 #define OPERATORS_H
 
 #include <iostream>
+#include <sstream>
 #include "../entities/base_entity.h"
 #include "../entities/player.h"
 #include "../items/base_item.h"

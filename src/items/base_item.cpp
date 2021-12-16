@@ -28,13 +28,21 @@ const size_t BaseItem::getY() const
 	return this->y;
 }
 
+void BaseItem::setEffect(int effect)
+{
+	this->effect = effect;
+}
+
 BaseItem::BaseItem(const BaseItem& other): BaseDrawable(other),
-	x{other.x}, y{other.y}, effect{effect}
+	x{other.x}, y{other.y}, effect{other.effect}
 {}
 
-BaseItem::BaseItem(BaseItem&& other): BaseDrawable(other),
-	x{other.x}, y{other.y}
-{}
+BaseItem::BaseItem(BaseItem&& other): BaseDrawable(other)
+{
+	std::swap(this->x, other.x);
+	std::swap(this->y, other.y);
+	std::swap(this->effect, other.effect);
+}
 
 BaseItem& BaseItem::operator =(const BaseItem& other)
 {

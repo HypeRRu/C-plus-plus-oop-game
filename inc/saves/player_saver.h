@@ -7,7 +7,7 @@
 #include "../entities/player.h"
 #include "../interfaces/saver.h"
 
-class PlayerSaver
+class PlayerSaver: public Saver
 {
 public:
 	PlayerSaver(
@@ -17,6 +17,8 @@ public:
 		int _damage,
 		int _money_picked
 	);
+
+	void checkParams() const;
 
 	PlayerSaver(
 		std::istringstream& stream
@@ -34,6 +36,8 @@ protected:
 	int money_picked;
 
 	std::string offset;
+
+	bool position_set;
 };
 
 #endif

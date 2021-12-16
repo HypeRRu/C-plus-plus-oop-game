@@ -32,7 +32,7 @@ public:
 	virtual void notify(const std::string& message);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 protected:
-	void configureWindow();
+	virtual void configureWindow();
 
 	std::vector<std::unique_ptr<BaseButton>> buttons;
 	int current_button;

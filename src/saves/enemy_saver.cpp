@@ -14,7 +14,9 @@ EnemySaver::EnemySaver(
 	this->offset = "\t\t";
 }
 
-EnemySaver::EnemySaver(std::istringstream& stream)
+EnemySaver::EnemySaver(std::istringstream& stream):
+	money_picked{0},
+	position_set{false}
 {
 	this->offset = "\t\t";
 	// parse string
@@ -44,6 +46,7 @@ EnemySaver::EnemySaver(std::istringstream& stream)
 		{
 			block >> parameter_pair;
 			this->position = parameter_pair;
+			this->position_set = true;
 		}
 		else if (left_op == "health")
 		{
@@ -64,6 +67,25 @@ EnemySaver::EnemySaver(std::istringstream& stream)
 			this->money_picked = parameter_int;
 		}
 	}
+	this->checkParams();
+}
+
+void EnemySaver::checkParams() const
+{
+	std::string missing_params = "";
+	if (this->enemy_type == "")
+		missing_params += "type\n";
+	if (!this->position_set)
+		missing_params += "position\n";
+	if (missing_params != "")
+		throw ParseError{"Enemy", missing_params};
+
+	if (this->damage <= 0)
+		throw GameLogicError{"Enemy damage must be greater than 0"};
+	if (this->shield < 0)
+		throw GameLogicError{"Enemy shield cannot be less than 0"};
+	if (this->health <= 0)
+		throw GameLogicError{"Enemy health must be greater than 0"};
 }
 
 std::string EnemySaver::save() const
@@ -102,7 +124,11 @@ std::shared_ptr<BaseEnemy> EnemySaver::load() const
 			this->position.first,
 			this->position.second
 		);
-	}
+	} else
+		throw FileReadError{this->enemy_type};
+
+	if (!enemy.get())
+		throw GameLogicError{"Unable to create enemy instance!"};
 	enemy->changeHealth(
 		this->health - enemy->getHealth()
 	);

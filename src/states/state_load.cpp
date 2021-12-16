@@ -49,28 +49,41 @@ void StateLoad::loadFromSlot(
 ) const
 {
 	// load from file
-	std::string fname = "assets/saves/slot";
-	fname = fname + std::to_string(slot_number) + ".txt";
-	std::unique_ptr<StateGameplay> state;
-	std::string save_content;
-	std::fstream file;
-	file.open(fname, std::fstream::in);
-	if (file.is_open())
-		save_content.assign(
-			std::istreambuf_iterator<char>(file),
-			std::istreambuf_iterator<char>()
+	try
+	{
+		std::string fname = "assets/saves/slot";
+		fname = fname + std::to_string(slot_number) + ".txt";
+		std::unique_ptr<StateGameplay> state;
+		std::string save_content;
+		std::fstream file;
+		file.open(fname, std::fstream::in);
+		if (file.is_open())
+			save_content.assign(
+				std::istreambuf_iterator<char>(file),
+				std::istreambuf_iterator<char>()
+			);
+		else
+			throw FileReadError{};
+		file.close();
+		std::shared_ptr<GameplaySaver> saver;
+		std::istringstream stream(save_content);
+		saver = std::make_shared<GameplaySaver>(stream);
+		state = saver->load(
+			this->getGame(),
+			this->getRendererPtr()
 		);
-	file.close();
-	std::shared_ptr<GameplaySaver> saver;
-	std::istringstream stream(save_content);
-	saver = std::make_shared<GameplaySaver>(stream);
-	state = saver->load(
-		this->getGame(),
-		this->getRendererPtr()
-	);
-	// this->back();
-	this->getGame().toMenu();
-	this->getGame().newState(std::move(state));
+		this->getGame().toMenu();
+		this->getGame().newState(std::move(state));
+	} catch (const GameError& error)
+	{
+		auto state_error = std::make_unique<StateError>(
+			this->getGame(), 
+			this->renderer,
+			error.what()
+		);
+		this->getGame().newState(std::move(state_error));
+		// std::cout << error.what() << std::endl;
+	}
 }
 
 void StateLoad::back() const

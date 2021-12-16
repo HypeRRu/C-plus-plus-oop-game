@@ -11,7 +11,7 @@
 #include "../items/weapon_item.h"
 #include "../interfaces/saver.h"
 
-class ItemSaver
+class ItemSaver: public Saver
 {
 public:
 	ItemSaver(
@@ -19,6 +19,8 @@ public:
 		int _effect,
 		const std::string& _item_type
 	);
+
+	void checkParams() const;
 
 	ItemSaver(
 		std::istringstream& stream
@@ -34,6 +36,8 @@ protected:
 	int effect;
 
 	std::string offset;
+
+	bool position_set;
 };
 
 #endif

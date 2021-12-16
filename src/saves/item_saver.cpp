@@ -10,7 +10,8 @@ ItemSaver::ItemSaver(
 	this->offset = "\t\t";
 }
 
-ItemSaver::ItemSaver(std::istringstream& stream)
+ItemSaver::ItemSaver(std::istringstream& stream):
+	position_set{false}
 {
 	this->offset = "\t\t";
 	// parse string
@@ -40,6 +41,7 @@ ItemSaver::ItemSaver(std::istringstream& stream)
 		{
 			block >> parameter_pair;
 			this->position = parameter_pair;
+			this->position_set = true;
 		}
 		else if (left_op == "effect")
 		{
@@ -47,6 +49,20 @@ ItemSaver::ItemSaver(std::istringstream& stream)
 			this->effect = parameter_int;
 		}
 	}
+	this->checkParams();
+}
+
+void ItemSaver::checkParams() const
+{
+	std::string missing_params = "";
+	if (this->item_type == "")
+		missing_params += "type\n";
+	if (!this->position_set)
+		missing_params += "position\n";
+	if (!this->effect)
+		missing_params += "effect\n";
+	if (missing_params != "")
+		throw ParseError{"Item", missing_params};
 }
 
 std::string ItemSaver::save() const
@@ -92,6 +108,9 @@ std::shared_ptr<BaseItem> ItemSaver::load() const
 			this->position.second,
 			this->effect
 		);
-	}
+	} else
+		throw FileReadError{this->item_type};
+	if (!item.get())
+		throw GameLogicError{"Unable to create item instance!"};
 	return item;
 }

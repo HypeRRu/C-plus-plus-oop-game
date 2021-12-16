@@ -14,6 +14,8 @@
 #include "graphics/renderer.h"
 #include "graphics/base_window.h"
 #include "graphics/save_window.h"
+#include "../exceptions/file_write_error.h"
+#include "state_error.h"
 
 class Game;
 class Renderer;

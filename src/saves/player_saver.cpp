@@ -13,7 +13,9 @@ PlayerSaver::PlayerSaver(
 	this->offset = "";
 }
 
-PlayerSaver::PlayerSaver(std::istringstream& stream)
+PlayerSaver::PlayerSaver(std::istringstream& stream):
+	money_picked{0},
+	position_set{false}
 {
 	this->offset = "";
 	// parse string
@@ -38,6 +40,7 @@ PlayerSaver::PlayerSaver(std::istringstream& stream)
 		{
 			block >> parameter_pair;
 			this->position = parameter_pair;
+			this->position_set = true;
 		}
 		else if (left_op == "health")
 		{
@@ -58,6 +61,23 @@ PlayerSaver::PlayerSaver(std::istringstream& stream)
 			this->money_picked = parameter_int;
 		}
 	}
+	this->checkParams();	
+}
+
+void PlayerSaver::checkParams() const
+{
+	std::string missing_params = "";
+	if (!this->position_set)
+		missing_params += "position\n";
+	if (missing_params != "")
+		throw ParseError{"Player", missing_params};
+
+	if (this->damage <= 0)
+		throw GameLogicError{"Player damage must be greater than 0"};
+	if (this->shield < 0)
+		throw GameLogicError{"Player shield cannot be less than 0"};
+	if (this->health <= 0)
+		throw GameLogicError{"Player health must be greater than 0"};
 }
 
 std::string PlayerSaver::save() const
@@ -81,6 +101,8 @@ std::shared_ptr<Player> PlayerSaver::load() const
 		this->position.first,
 		this->position.second
 	);
+	if (!player.get())
+		throw GameLogicError{"Unable to create player instance!"};
 	player->changeHealth(
 		this->health - player->getHealth()
 	);

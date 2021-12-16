@@ -4,7 +4,7 @@
 Field::Field(size_t width, size_t height)
 {
 	if (width <= 0 || height <= 0) 
-		throw std::runtime_error("Длина и ширина должны быть положительными числами!");
+		throw GameLogicError{"Field width and height must be positive numbers"};
 	this->width = width;
 	this->height = height;
 
@@ -34,7 +34,7 @@ Field::Field(Field&& other) : width{other.width}, height{other.height}
 void Field::setCell(size_t x, size_t y, Cell *cell)
 {
 	if (x < 0 || y < 0 || x >= this->width || y >= this->height) 
-		throw std::runtime_error("Координаты не должны выходить за границы поля!");
+		throw GameLogicError{"Cell coordinates must be in field area"};
 	cells[y][x] = cell->createUniquePtr();
 }
 

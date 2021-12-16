@@ -11,6 +11,7 @@
 #include "cells/end_cell.h"
 #include "actions/base_observed.h"
 #include "actions/action_add_drawable.h"
+#include "exceptions/game_logic_error.h"
 
 #include "saves/field_saver.h"
 

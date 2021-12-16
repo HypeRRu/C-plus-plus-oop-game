@@ -14,7 +14,9 @@ GameplaySaver::GameplaySaver(
 	this->offset = "";
 }
 
-GameplaySaver::GameplaySaver(std::istringstream& stream)
+GameplaySaver::GameplaySaver(std::istringstream& stream):
+	enemies_killed{0},
+	steps_count{0}
 {
 	this->offset = "";
 	// parse string
@@ -39,16 +41,28 @@ GameplaySaver::GameplaySaver(std::istringstream& stream)
 		{
 			this->player = std::make_shared<PlayerSaver>(stream);
 		}
-		else if (left_op == "enemies_killed")
+		else if (left_op == "enemies_killed") // not required
 		{
 			block >> parameter;
 			this->enemies_killed = parameter;
-		} else if (left_op == "steps_count")
+		} else if (left_op == "steps_count") // not required
 		{
 			block >> parameter;
 			this->steps_count = parameter;
 		}
 	}
+	this->checkParams();	
+}
+
+void GameplaySaver::checkParams() const
+{
+	std::string missing_params = "";
+	if (!this->field.get())
+		missing_params += "field\n";
+	if (!this->player.get())
+		missing_params += "player\n";
+	if (missing_params != "")
+		throw ParseError{"Gameplay", missing_params};
 }
 
 std::string GameplaySaver::save() const
@@ -75,5 +89,7 @@ std::unique_ptr<StateGameplay> GameplaySaver::load(
 		this->enemies_killed,
 		this->steps_count
 	);
+	if (!state.get())
+		throw GameLogicError{"Unable to load gameplay state!"};
 	return std::move(state);
 }

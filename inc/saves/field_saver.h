@@ -11,7 +11,7 @@
 
 class Field;
 
-class FieldSaver
+class FieldSaver: public Saver
 {
 public:
 	FieldSaver(
@@ -19,6 +19,8 @@ public:
 		size_t _height,
 		const Field& field_instance
 	);
+
+	void checkParams() const;
 
 	FieldSaver(
 		std::istringstream& stream

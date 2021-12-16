@@ -10,7 +10,7 @@
 #include "../entities/gargoyle_enemy.h"
 #include "../interfaces/saver.h"
 
-class EnemySaver
+class EnemySaver: public Saver
 {
 public:
 	EnemySaver(
@@ -21,6 +21,8 @@ public:
 		int _money_picked,
 		const std::string& _enemy_type
 	);
+
+	void checkParams() const;
 
 	EnemySaver(
 		std::istringstream& stream
@@ -39,6 +41,8 @@ protected:
 	int money_picked;
 
 	std::string offset;
+
+	bool position_set;
 };
 
 #endif

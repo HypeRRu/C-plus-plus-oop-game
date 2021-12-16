@@ -26,6 +26,7 @@ public:
 	virtual bool onPickUp(BaseEntity& entity) = 0;
 	bool onAdd();
 	void destroy();
+	void setEffect(int effect);
 	virtual const int getEffect() const = 0;
 	
 	const size_t getX() const;

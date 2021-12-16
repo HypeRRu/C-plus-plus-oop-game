@@ -7,15 +7,15 @@
 #include "../cells/cell.h"
 #include "../cells/end_cell.h"
 #include "../cells/start_cell.h"
-#include "../interfaces/saver.h"
 #include "enemy_saver.h"
 #include "item_saver.h"
+#include "../logger/operators.h"
 
 class Cell;
 class EndCell;
 class StartCell;
 
-class CellSaver
+class CellSaver: public Saver
 {
 public:
 	CellSaver(
@@ -29,6 +29,8 @@ public:
 	CellSaver(
 		std::istringstream& stream
 	);
+
+	void checkParams() const;
 
 	~CellSaver() = default;
 
@@ -45,6 +47,7 @@ protected:
 	std::shared_ptr<ItemSaver> item;
 
 	std::string offset;
+	bool position_set;
 };
 
 #endif

@@ -1,45 +1,40 @@
-#ifndef STATE_LOAD_H
-#define STATE_LOAD_H
+#ifndef STATE_ERROR_H
+#define STATE_ERROR_H
 
 #include <memory>
 #include <functional>
 #include <string>
-#include <fstream>
 
 #include "base_state.h"
 #include "../game.h"
 #include "../game_config.h"
-#include "load_event_handler.h"
-#include "state_gameplay.h"
+#include "error_event_handler.h"
 
 #include "graphics/renderer.h"
-#include "graphics/base_window.h"
-#include "graphics/load_window.h"
-#include "state_error.h"
+#include "graphics/message_window.h"
 
 class Game;
 class Renderer;
-class LoadWindow;
-class StateGameplay;
+class MessageWindow;
 
-class StateLoad: public BaseState
+class StateError: public BaseState
 {
 public:
-	StateLoad(
+	StateError(
 		Game& game,
-		std::shared_ptr<Renderer> _renderer
+		std::shared_ptr<Renderer> _renderer,
+		const std::string& message
 	);
-	~StateLoad();
+	~StateError();
 
 	Game& getGame() const;
 	std::shared_ptr<Renderer> getRendererPtr() const;
 	std::shared_ptr<BaseWindow> getWindow() const;
+	std::string getMessage() const;
 
 	void showing() const;
 
 	bool update(int time_passed = 0);
-
-	void loadFromSlot(int slot_number = 1) const;
 	void back() const;
 protected:
 	std::reference_wrapper<Game> game_object;

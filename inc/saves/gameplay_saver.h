@@ -7,12 +7,13 @@
 
 #include "player_saver.h"
 #include "field_saver.h"
+#include "../interfaces/saver.h"
 
 class StateGameplay;
 class Game;
 class Renderer;
 
-class GameplaySaver
+class GameplaySaver: public Saver
 {
 public:
 	GameplaySaver(
@@ -25,6 +26,8 @@ public:
 	GameplaySaver(
 		std::istringstream& stream
 	);
+
+	void checkParams() const;
 
 	~GameplaySaver() = default;
 

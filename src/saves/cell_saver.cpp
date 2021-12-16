@@ -19,7 +19,9 @@ CellSaver::CellSaver(
 	this->offset = "\t";
 }
 
-CellSaver::CellSaver(std::istringstream& stream)
+CellSaver::CellSaver(std::istringstream& stream):
+	wall{0},
+	position_set{false}
 {
 	this->offset = "\t";
 	// parse string
@@ -50,6 +52,7 @@ CellSaver::CellSaver(std::istringstream& stream)
 		{
 			block >> parameter_pair;
 			this->position = parameter_pair;
+			this->position_set = true;
 		}
 		else if (left_op == "wall")
 		{
@@ -63,6 +66,18 @@ CellSaver::CellSaver(std::istringstream& stream)
 			this->item = std::make_shared<ItemSaver>(stream);
 		}
 	}
+	this->checkParams();
+}
+
+void CellSaver::checkParams() const
+{
+	std::string missing_params = "";
+	if (this->cell_type == "")
+		missing_params += "type\n";
+	if (!this->position_set)
+		missing_params += "position\n";
+	if (missing_params != "")
+		throw ParseError{"Cell", missing_params};
 }
 
 std::string CellSaver::save() const
@@ -109,19 +124,40 @@ std::shared_ptr<Cell> CellSaver::load() const
 			this->position.first,
 			this->position.second
 		);
-	}
+	} else
+		throw FileReadError{this->cell_type};
+
+	if (!cell.get())
+		throw GameLogicError{"Unable to create cell instance!"};
 	if (this->enemy.get())
 	{
+		std::shared_ptr<BaseEnemy> en = this->enemy->load();
+		if (
+			cell->getX() != en->getX() ||
+			cell->getY() != en->getY()
+		)
+			throw GameLogicError{"Enemy coordinates must be same as cell coords"};
 		cell->setEnemy(
-			this->enemy->load()
+			en
 		);
 	}
 	if (this->item.get())
 	{
+		std::shared_ptr<BaseItem> it = this->item->load();
+		if (
+			cell->getX() != it->getX() ||
+			cell->getY() != it->getY()
+		)
+			throw GameLogicError{"Item coordinates must be same as cell coords"};
 		cell->setItem(
-			this->item->load()
+			it
 		);
 	}
+	if (
+		this->wall && 
+		(this->item.get() || this->enemy.get())
+	)
+		throw GameLogicError{"Item and enemy cannot be\n in wall cell"};
 	return cell;
 }
 

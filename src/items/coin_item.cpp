@@ -1,6 +1,7 @@
 #include "../../inc/items/coin_item.h"
 #include "../../inc/saves/item_saver.h"
 
+#include <iostream>
 CoinItem::CoinItem(
 	size_t x,
 	size_t y,

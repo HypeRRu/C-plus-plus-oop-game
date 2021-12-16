@@ -53,16 +53,30 @@ bool StateSave::update(int time_passed)
 void StateSave::saveInSlot(int slot_number) const
 {
 	// save into file
-	std::string fname = "assets/saves/slot";
-	fname = fname + std::to_string(slot_number) + ".txt";
-	std::string save_content; // save content will be here
-	save_content = this->getGameplay().getSave();
-	std::fstream file;
-	file.open(fname, std::fstream::out);
-	if (file.is_open())
-		file << save_content;
-	file.close();
-	this->back();
+	try
+	{
+		std::string fname = "assets/saves/slot";
+		fname = fname + std::to_string(slot_number) + ".txt";
+		std::string save_content; // save content will be here
+		save_content = this->getGameplay().getSave();
+		std::fstream file;
+		file.open(fname, std::fstream::out);
+		if (file.is_open())
+			file << save_content;
+		else
+			throw FileWriteError{};
+		file.close();
+		this->back();
+	} catch (const FileWriteError& error)
+	{
+		// std::cout << error.what() << std::endl;
+		auto state_error = std::make_unique<StateError>(
+			this->getGame(), 
+			this->renderer,
+			error.what()
+		);
+		this->getGame().newState(std::move(state_error));
+	}
 }
 
 void StateSave::back() const
