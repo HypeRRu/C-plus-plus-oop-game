@@ -1,5 +1,7 @@
 #include "../../inc/items/coin_item.h"
+#include "../../inc/saves/item_saver.h"
 
+#include <iostream>
 CoinItem::CoinItem(
 	size_t x,
 	size_t y,
@@ -30,4 +32,13 @@ ItemType CoinItem::getItemType() const
 std::shared_ptr<BaseItem> CoinItem::getSharedPtr()
 {
 	return std::make_shared<CoinItem>(*this);
+}
+
+std::shared_ptr<ItemSaver> CoinItem::createSaver() const
+{
+	return std::make_shared<ItemSaver>(
+		std::pair<size_t, size_t>{this->x, this->y},
+		this->effect,
+		"CoinItem"
+	);
 }

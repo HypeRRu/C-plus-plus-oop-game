@@ -16,7 +16,7 @@ bool GameObserver::moveLogicForEnemy(ActionMove& action)
 	if (this->field->getCell(
 		action.getCoords().first,
 		action.getCoords().second
-	).getEnemy().get() != nullptr)
+	).getEnemy().lock().get() != nullptr)
 		return false;
 	if (this->player->getX() == action.getCoords().first &&
 		this->player->getY() == action.getCoords().second)
@@ -35,7 +35,7 @@ bool GameObserver::moveLogicForEnemy(ActionMove& action)
 		this->field->getCell(
 			action.getEntity().getX(),
 			action.getEntity().getY()
-		).getEnemy()
+		).getEnemy().lock()
 	);
 	this->field->getCell(
 		action.getEntity().getX(),
@@ -54,23 +54,24 @@ bool GameObserver::moveLogicForPlayer(ActionMove& action)
 
 	this->game_object.increaseStepsCount();
 
-	if (target_cell.getEnemy().get())
+	if (target_cell.getEnemy().lock().get())
 	{
 		ActionAttack act(
 			action.getEntity(),
-			*target_cell.getEnemy().get()
+			*target_cell.getEnemy().lock().get()
 		);
 		this->handleAction(act);
 		return false;
 	}
-	if (target_cell.getItem().get())
+	if (target_cell.getItem().lock().get())
 	{
 		ActionPickItem act(
 			action.getEntity(),
-			*target_cell.getItem().get()
+			*target_cell.getItem().lock().get()
 		);
 		this->handleAction(act);
 	}
+	// move on the field
 	return true;
 }
 
@@ -134,26 +135,25 @@ bool GameObserver::handleAction(ActionAttack& action)
 bool GameObserver::handleAction(ActionDeleteItem& action)
 {
 	this->renderer->removeObject(action.getItem());
+	Logger::instance().handleAction(action);
 	this->field->getCell(
 		action.getItem().getX(),
 		action.getItem().getY()
 	).setItem(nullptr);
-
-	Logger::instance().handleAction(action);
 	return true;
 }
 
 bool GameObserver::handleAction(ActionDeleteEnemy& action)
 {
 	this->renderer->removeObject(action.getEnemy());
+	this->game_object.increaseEnemiesKilled();
+
+	Logger::instance().handleAction(action);
+	
 	this->field->getCell(
 		action.getEnemy().getX(),
 		action.getEnemy().getY()
 	).setEnemy(nullptr);
-
-	this->game_object.increaseEnemiesKilled();
-
-	Logger::instance().handleAction(action);
 	return true;
 }
 
@@ -185,13 +185,19 @@ bool GameObserver::handleAction(ActionPlayerReachEnd& action)
 	if (this->game_object.isCompleted())
 	{
 		Logger::instance().write("Level completed!\n");
-		this->game_object.getGame().exit();
-		// std::cout << "Level completed!" << std::endl;
+		this->game_object.getGame().popState();
 	}
 	else
 	{
 		Logger::instance().write("Level not been completed yet!\n");
-		// std::cout << "Level not been completed yet!" << std::endl;
 	}	
+	return true;
+}
+
+bool GameObserver::handleAction(ActionPlayerDied& action)
+{
+	Logger::instance().handleAction(action);
+	this->game_object.getGame().exit(); // or exit
+
 	return true;
 }

@@ -12,6 +12,8 @@
 #include "../entities/base_entity.h"
 #include "../views/base_drawable.h"
 
+class ItemSaver;
+
 class BaseItem: 
 	public Item,
 	public BaseDrawable,
@@ -24,6 +26,7 @@ public:
 	virtual bool onPickUp(BaseEntity& entity) = 0;
 	bool onAdd();
 	void destroy();
+	void setEffect(int effect);
 	virtual const int getEffect() const = 0;
 	
 	const size_t getX() const;
@@ -31,6 +34,8 @@ public:
 
 	virtual std::shared_ptr<BaseItem> getSharedPtr() = 0;
 	virtual ItemType getItemType() const = 0;
+
+	virtual std::shared_ptr<ItemSaver> createSaver() const = 0;
 
 	BaseItem(const BaseItem& other);
 	BaseItem(BaseItem&& other);

@@ -1,10 +1,17 @@
 #include "../../inc/cells/cell.h"
 #include "../../inc/items/base_item.h"
 #include "../../inc/entities/base_enemy.h"
+#include "../../inc/saves/cell_saver.h"
 
 Cell::Cell(size_t x, size_t y, bool wall) : x{x}, y{y}, wall{wall}
 {
 	this->setView(std::make_shared<CellView>(x, y, wall));
+}
+
+Cell::~Cell()
+{
+	this->item.reset();
+	this->enemy.reset();
 }
 
 CellType Cell::getType()
@@ -73,12 +80,18 @@ Cell& Cell::operator =(Cell&& other)
 
 void Cell::setItem(std::shared_ptr<BaseItem> _item)
 {
-	this->item = _item;
+	if (!_item.get())
+		this->item.reset();
+	else
+		this->item = _item;
 }
 
 void Cell::setEnemy(std::shared_ptr<BaseEnemy> _enemy)
 {
-	this->enemy = _enemy;
+	if(!_enemy.get())
+		this->enemy.reset();
+	else
+		this->enemy = _enemy;
 }
 
 const size_t Cell::getX() const
@@ -101,12 +114,12 @@ void Cell::toggleWall()
 	this->wall = !this->wall;
 }
 
-std::shared_ptr<BaseItem> Cell::getItem() const
+std::weak_ptr<BaseItem> Cell::getItem() const
 {
 	return this->item;
 }
 
-std::shared_ptr<BaseEnemy> Cell::getEnemy() const
+std::weak_ptr<BaseEnemy> Cell::getEnemy() const
 {
 	return this->enemy;
 }
@@ -114,4 +127,15 @@ std::shared_ptr<BaseEnemy> Cell::getEnemy() const
 std::unique_ptr<Cell> Cell::createUniquePtr()
 {
 	return std::make_unique<Cell>(*this);
+}
+
+std::shared_ptr<CellSaver> Cell::createSaver() const
+{
+	return std::make_shared<CellSaver>(
+		std::pair<size_t, size_t>{this->x, this->y},
+		this->wall,
+		this->getEnemy(),
+		this->getItem(),
+		"Cell"
+	);
 }

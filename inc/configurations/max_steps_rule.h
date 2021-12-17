@@ -10,7 +10,7 @@ class MaxStepsRule: public GameRule
 public:
 	bool exec(StateGameplay& state) const
 	{
-		return state.getStepsCount() < steps_cnt;
+		return state.getStepsCount() <= steps_cnt;
 	}
 };
 

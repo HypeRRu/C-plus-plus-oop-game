@@ -15,7 +15,7 @@ DEPEXT      := d
 OBJEXT      := o
 
 #Flags, Libraries and Includes
-CFLAGS      := -Wall -O3 -std=c++2a -g
+CFLAGS      := -w -O3 -std=c++2a -g3
 LIB         := -lsfml-graphics -lsfml-system -lsfml-window
 INC         := -I$(INCDIR) -I/usr/local/include
 INCDEP      := -I$(INCDIR)

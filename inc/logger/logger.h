@@ -13,6 +13,7 @@
 #include "../actions/action_delete_item.h"
 #include "../actions/action_delete_enemy.h"
 #include "../actions/action_player_reach_end.h"
+#include "../actions/action_player_died.h"
 #include "../actions/base_observed.h"
 #include "operators.h"
 
@@ -44,6 +45,7 @@ public:
 	bool handleAction(ActionPickItem& action);
 	bool handleAction(ActionAddDrawable& action);
 	bool handleAction(ActionPlayerReachEnd& action);
+	bool handleAction(ActionPlayerDied& action);
 
 	void write(const std::string& log);
 

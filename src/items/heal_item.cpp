@@ -1,4 +1,5 @@
 #include "../../inc/items/heal_item.h"
+#include "../../inc/saves/item_saver.h"
 
 HealItem::HealItem(
 	size_t x,
@@ -30,4 +31,13 @@ ItemType HealItem::getItemType() const
 std::shared_ptr<BaseItem> HealItem::getSharedPtr()
 {
 	return std::make_shared<HealItem>(*this);
+}
+
+std::shared_ptr<ItemSaver> HealItem::createSaver() const
+{
+	return std::make_shared<ItemSaver>(
+		std::pair<size_t, size_t>{this->x, this->y},
+		this->effect,
+		"HealItem"
+	);
 }

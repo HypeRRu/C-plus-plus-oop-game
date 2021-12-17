@@ -1,7 +1,7 @@
 #include "../../inc/graphics/renderer.h"
 
 Renderer::Renderer(size_t w_width, size_t w_height, std::string title):
-	w_width{w_width}, w_height{w_height}, title{title}
+	w_width{w_width}, w_height{w_height}, title{title}, is_rendering_window{false}
 {
 	this->window.create(
 		sf::VideoMode(w_width, w_height), 
@@ -35,13 +35,23 @@ bool Renderer::renderFrame()
 	if (!this->isWindowOpen())
 		return false;
 
-	this->getWindow().clear(sf::Color(255, 255, 255, 0));
+	this->getWindow().clear(sf::Color(255, 255, 255, 100));
 
-	/* render all layers */
-	for (slayer& layer: this->render_objects)
+	if (!is_rendering_window) // rendering state gameplay
 	{
-		for (std::pair<size_t, sf::Sprite> object: layer)
-			this->getWindow().draw(object.second);
+		/* render all layers */
+		for (slayer& layer: this->render_objects)
+		{
+			for (std::pair<size_t, sf::Sprite> object: layer)
+				this->getWindow().draw(object.second);
+		}
+	} else // rendering other window
+	{
+		this->getWindow().clear(sf::Color(210, 210, 210, 170));
+		// this->getWindow().clear(sf::Color(192, 192, 192, 170));
+		this->getWindow().draw(
+			*this->window_rendering.lock().get()
+		);
 	}
 	
 	this->getWindow().display();
@@ -108,3 +118,17 @@ void Renderer::flushObjects()
 	for (slayer& layer: this->render_objects)
 		layer.clear();
 }
+
+void Renderer::setWindowRendering(
+	std::shared_ptr<BaseWindow> _window_rendering
+)
+{
+	this->window_rendering = _window_rendering;
+	this->is_rendering_window = true;
+}
+
+void Renderer::removeWindowRendering()
+{
+	this->is_rendering_window = false;
+}
+

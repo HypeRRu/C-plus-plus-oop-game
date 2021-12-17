@@ -9,6 +9,7 @@ class BaseState: public State
 {
 public:
 	virtual bool update(int time_passed = 0) = 0;
+	virtual void showing() const = 0;
 	std::shared_ptr<EventHandler> getEventHandler() const;
 	void setEventHandler(std::shared_ptr<EventHandler> _handler);
 	virtual ~BaseState() = default;

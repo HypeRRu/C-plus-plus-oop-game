@@ -22,16 +22,14 @@ Game::Game(): running{false}
 			"filelog"
 		);
 	}
-	auto state = std::make_unique<StateGameplay>(
-		*this, this->renderer
-	);
 	this->manager = std::make_shared<WindowManager>(
 		this->renderer->getWindow()
 	);
-	this->manager->setEventHandler(
-		state->getEventHandler()
+
+	auto state_menu = std::make_unique<StateMenu>(
+		*this, this->renderer
 	);
-	states.push_back(std::move(state));
+	this->newState(std::move(state_menu));
 }
 
 bool Game::run()
@@ -46,6 +44,8 @@ bool Game::run()
 	{
 		sclock::time_point renderStarts = sclock::now();
 		this->manager->processEvents();
+		if (!this->running)
+			break;
 		states.back()->update(
 			 std::chrono::duration_cast<std::chrono::milliseconds>(
 			 	renderStarts - previous_frame
@@ -62,10 +62,49 @@ bool Game::run()
 bool Game::exit()
 {
 	this->running = false;
+	GameConfig::instance().save();
 	return true;
 }
 
-bool Game::changeState() /* todo */
+bool Game::newState(std::unique_ptr<BaseState> state)
 {
+	this->states.push_back(std::move(state));
+	this->manager->setEventHandler(
+		this->states.back()->getEventHandler()
+	);
+	this->states.back()->showing();
+	return true;
+}
+
+bool Game::popState()
+{
+	this->states.pop_back();
+	if (!this->states.size())
+	{
+		this->exit();
+		return false;
+	}
+	this->manager->setEventHandler(
+		this->states.back()->getEventHandler()
+	);
+	this->states.back()->showing();
+	return true;
+}
+
+bool Game::toMenu()
+{
+	while (this->states.size() > 1)
+	{
+		this->states.pop_back();
+	}
+	if (!this->states.size())
+	{
+		this->exit();
+		return false;
+	}
+	this->manager->setEventHandler(
+		this->states.back()->getEventHandler()
+	);
+	this->states.back()->showing();
 	return true;
 }

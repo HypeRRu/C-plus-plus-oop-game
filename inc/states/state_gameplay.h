@@ -5,12 +5,14 @@
 #include <functional>
 #include <set>
 #include <cmath>
+#include <sstream>
+#include <string>
 
 #include "base_state.h"
 #include "../game.h"
 #include "../game_config.h"
 #include "gameplay_event_handler.h"
-// #include "movement_handler.h"
+#include "state_pause.h"
 
 #include "../interfaces/game_rule.h"
 #include "../interfaces/ichecker.h"
@@ -25,7 +27,6 @@
 #include "utils/field_generator.h"
 #include "utils/items_generator.h"
 #include "utils/enemies_generator.h"
-#include "utils/cells_iterator.h"
 
 #include "field.h"
 #include "cells/cell.h"
@@ -41,6 +42,8 @@ class GameObserver;
 class Renderer;
 class Game;
 class GameRule;
+class StatePause;
+class GameplaySaver;
 
 class StateGameplay: public BaseState
 {
@@ -49,12 +52,26 @@ public:
 		Game& game,
 		std::shared_ptr<Renderer> _renderer
 	);
-	~StateGameplay() = default;
+
+	StateGameplay(
+		Game& game,
+		std::shared_ptr<Renderer> _renderer,
+		std::shared_ptr<Field> _field,
+		std::shared_ptr<Player> _player,
+		int _enemies_killed,
+		int _steps_count
+	); // load game
+
+	~StateGameplay();
+
+	void showing() const;
+	void initDraw() const;
+	void initRules();
 
 	bool update(int time_passed = 0);
 	bool pause(bool pause_state = true);
 	bool generateLevel();
-	bool loadLevel(); /* will be added soon */
+	std::string getSave() const;
 
 	bool isCompleted();
 	bool isPaused() const;
@@ -64,11 +81,11 @@ public:
 	std::shared_ptr<Player> getPlayerPtr() const;
 
 	int getEnemiesKilled() const;
-	void increaseEnemiesKilled();
 	int getStepsCount() const;
+	void increaseEnemiesKilled();
 	void increaseStepsCount();
-	int getMoneyPicked() const;
-	void increaseMoneyPicked();
+
+	std::shared_ptr<GameplaySaver> createSaver() const;
 protected:
 	void configureObserver();
 
@@ -86,7 +103,6 @@ protected:
 
 	int enemies_killed;
 	int steps_count;
-	int money_picked;
 };
 
 #endif

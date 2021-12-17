@@ -10,17 +10,16 @@ GameplayEventHandler::GameplayEventHandler(StateGameplay& _state):
 
 bool GameplayEventHandler::handleEvent(Event e)
 {
-	bool paused = this->state.isPaused();
 	switch (e)
 	{
 		case Event::EventGoBack:
-			this->state.pause(!paused);
+			this->state.pause(true);
 			return true;
 		case Event::EventGameClosed:
 			this->state.getGame().exit();
 			return true;
 		default:
-			if (!paused && this->next_handler.get())
+			if (this->next_handler.get())
 				return this->next_handler->handleEvent(e);
 	}
 	return false;

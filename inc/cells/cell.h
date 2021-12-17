@@ -7,6 +7,7 @@
 
 #include "../views/cell_view.h"
 #include "../views/base_drawable.h"
+#include "../actions/base_observed.h"
 
 enum class CellType {
 	RegularCell,
@@ -16,12 +17,13 @@ enum class CellType {
 
 class BaseItem;
 class BaseEnemy;
+class CellSaver;
 
-class Cell: public BaseDrawable
+class Cell: public BaseDrawable, public BaseObserved
 {
 public:
 	Cell(size_t x, size_t y, bool wall = false);
-	virtual ~Cell() = default;
+	virtual ~Cell();
 
 	virtual CellType getType();
 
@@ -32,16 +34,17 @@ public:
 	Cell& operator =(const Cell& other);
 	Cell& operator =(Cell&& other);
 
-	void setItem(std::shared_ptr<BaseItem> _item);
-	void setEnemy(std::shared_ptr<BaseEnemy> _enemy);
+	void setItem(std::shared_ptr<BaseItem> _item = nullptr);
+	void setEnemy(std::shared_ptr<BaseEnemy> _enemy = nullptr);
 
-	std::shared_ptr<BaseEnemy> getEnemy() const;
-	std::shared_ptr<BaseItem> getItem() const;
+	std::weak_ptr<BaseEnemy> getEnemy() const;
+	std::weak_ptr<BaseItem> getItem() const;
 	const size_t getX() const;
 	const size_t getY() const;
 	bool   getHasWall() const;
 
 	void toggleWall();
+	virtual std::shared_ptr<CellSaver> createSaver() const;
 
 	virtual std::unique_ptr<Cell> createUniquePtr();
 protected:
